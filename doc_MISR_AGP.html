@@ -49,7 +49,16 @@
 </ul></li>
 <li><p><strong>Remarks:</strong> None.</p></li>
 <li><p><strong>Examples:</strong></p>
-<pre><code>[Insert the command and its outcome]</code></pre></li>
+<pre><code>IDL&gt; misr_path = 168
+IDL&gt; rc = get_agp_file(misr_path, agp_fspec, $
+   AGP_VERSION = agp_version, /DEBUG, $
+   EXCPT_COND = excpt_cond)
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, $
+   excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+rc = 0, excpt_cond = &gt;&lt;
+IDL&gt; PRINT, &#39;agp_fspec = &#39; + agp_fspec
+agp_fspec =
+   /Users/michel/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf</code></pre></li>
 <li><p><strong>References:</strong> None.</p></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
@@ -79,7 +88,16 @@
 <li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
 <li><p><strong>Outcome:</strong></p>
 <ul>
-<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. A log file and the land cover map used during the processing of MISR data (largely a land/sea mask) for the selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and for the indicated range of <span class="smallcaps">Blocks</span> is saved in the expected location <code>root_dirs[3] + &#8217;Pxxx_Bzzz/AGP/&#8217;</code> folder.</p></li>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. A log file and the land cover map used during the processing of MISR data (largely a land/sea mask) for the selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and for the indicated range of <span class="smallcaps">Blocks</span> is saved in the expected location <code>root_dirs[3] + &#8217;Pxxx_Bzzz/AGP/&#8217;</code> folder. The color coding of the land cover map is as follows:</p>
+<ul>
+<li><p>Navy: Deep ocean</p></li>
+<li><p>Blue: Shallow ocean</p></li>
+<li><p>Sand: Coastline</p></li>
+<li><p>Cyan: Shallow inland water</p></li>
+<li><p>Green: Land</p></li>
+<li><p>Purple: Ephemeral water</p></li>
+<li><p>Turquoise: Deep inland water</p></li>
+</ul></li>
 <li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The log file and the land cover map may not have been produced or may be incomplete or useless.</p></li>
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
@@ -100,20 +118,29 @@
 <li><p><strong>Dependencies:</strong></p>
 <ul>
 <li><p><code>MISR Toolkit</code></p></li>
+<li><p><code>block2str.pro</code></p></li>
+<li><p><code>chk_misr_block.pro</code></p></li>
+<li><p><code>chk_misr_path.pro</code></p></li>
 <li><p><code>get_agp_file.pro</code></p></li>
+<li><p><code>is_dir.pro</code></p></li>
+<li><p><code>is_writable.pro</code></p></li>
+<li><p><code>path2str.pro</code></p></li>
+<li><p><code>set_root_dirs.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
+<li><p><code>today.pro</code></p></li>
 </ul></li>
 <li><p><strong>Remarks:</strong></p>
 <ul>
 <li><p><strong>Note 1:</strong> This function currently does not check the validity of the optional input keyword parameter <code>agp_version</code>.</p></li>
-<li><p><strong>Note 2:</strong> If this function is called with a range of <span class="smallcaps">Blocks</span> spanning more than a single <span class="smallcaps">Block</span>, the log file and the map aare saved in the folder <code>root_dirs[2] + [MISR Path]_[MISR Block1]/</code>.</p></li>
+<li><p><strong>Note 2:</strong> If this function is called with a range of <span class="smallcaps">Blocks</span> spanning at least one <span class="smallcaps">Block</span>, the log file and the map are saved in the folder <code>root_dirs[3] + [MISR Path]_[MISR Block1]/</code>.</p></li>
 <li><p><strong>Note 3:</strong> This land cover map is primarily used as a land/ocean mask in two instances within the <span class="smallcaps">MISR</span> ground segment: (1) after generating the Ellipsoid-projected <span class="smallcaps">L1B2</span> data everywhere, that mask is used to generate the Terrain-projected data files only for those <span class="smallcaps">Blocks</span> that contain land masses, and (2) within the <span class="smallcaps">L2</span> characterization of atmospheric properties, the same land/ocean mask is also used to choose between the ocean-specific or the land-specific aerosol algorithm. This map is not intended to be used for other purposes; factual errors will be corrected when generating a new version, but there is no intention to make it more discriminating, as such information is not used by the <span class="smallcaps">MISR</span> ground segment.</p></li>
 </ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; rc = map_agp_lc_blocks(168, 108, 114, AGP_VERSION = &#39;F01_24&#39;, $
    /DEBUG, EXCPT_COND = excpt_cond)
 The map of AGP land cover has been saved in
-[misr_roots[2]]/P168_B108/AGP/map-AGP_P168_B108_B114_LC_F01_24_2018-02-21.png</code></pre></li>
+[misr_roots[3]]/P168_B108/AGP/
+   map-AGP_P168_B108_B114_LC_F01_24_2018-02-21.png</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
 <li><p>Scott A. Lewicki and Jia Zong (1999) &#8217;Level 1 Ancillary Geographic Product Algorithm Theoretical Basis&#8217;, JPL D-13400, Revision A, available from <a href="https://eospso.gsfc.nasa.gov/sites/default/files/atbd/atbd-misr-05.pdf" class="uri">https://eospso.gsfc.nasa.gov/sites/default/files/atbd/atbd-misr-05.pdf</a>.</p></li>

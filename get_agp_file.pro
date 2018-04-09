@@ -84,7 +84,16 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ;
    ;  EXAMPLES:
    ;
-   ;      [Insert the command and its outcome]
+   ;      IDL> misr_path = 168
+   ;      IDL> rc = get_agp_file(misr_path, agp_fspec, $
+   ;         AGP_VERSION = agp_version, /DEBUG, $
+   ;         EXCPT_COND = excpt_cond)
+   ;      IDL> PRINT, 'rc = ' + strstr(rc) + ', $
+   ;         excpt_cond = >' + excpt_cond + '<'
+   ;      rc = 0, excpt_cond = ><
+   ;      IDL> PRINT, 'agp_fspec = ' + agp_fspec
+   ;      agp_fspec =
+   ;         /Users/michel/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf
    ;
    ;  REFERENCES: None.
    ;

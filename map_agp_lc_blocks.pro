@@ -49,7 +49,21 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;      during the processing of MISR data (largely a land/sea mask) for
    ;      the selected MISR PATH and for the indicated range of BLOCKS is
    ;      saved in the expected location root_dirs[3] + ’Pxxx_Bzzz/AGP/’
-   ;      folder.
+   ;      folder. The color coding of the land cover map is as follows:
+   ;
+   ;      -   Navy: Deep ocean
+   ;
+   ;      -   Blue: Shallow ocean
+   ;
+   ;      -   Sand: Coastline
+   ;
+   ;      -   Cyan: Shallow inland water
+   ;
+   ;      -   Green: Land
+   ;
+   ;      -   Purple: Ephemeral water
+   ;
+   ;      -   Turquoise: Deep inland water
    ;
    ;  *   If an exception condition has been detected, this function
    ;      returns a non-zero error code, and the output keyword parameter
@@ -93,9 +107,25 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;
    ;  *   MISR Toolkit
    ;
+   ;  *   block2str.pro
+   ;
+   ;  *   chk_misr_block.pro
+   ;
+   ;  *   chk_misr_path.pro
+   ;
    ;  *   get_agp_file.pro
    ;
+   ;  *   is_dir.pro
+   ;
+   ;  *   is_writable.pro
+   ;
+   ;  *   path2str.pro
+   ;
+   ;  *   set_root_dirs.pro
+   ;
    ;  *   strstr.pro
+   ;
+   ;  *   today.pro
    ;
    ;  REMARKS:
    ;
@@ -103,8 +133,8 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;      the optional input keyword parameter agp_version.
    ;
    ;  *   NOTE 2: If this function is called with a range of BLOCKS
-   ;      spanning more than a single BLOCK, the log file and the map aare
-   ;      saved in the folder root_dirs[2] + [MISR Path]_[MISR Block1]/.
+   ;      spanning at least one BLOCK, the log file and the map are saved
+   ;      in the folder root_dirs[3] + [MISR Path]_[MISR Block1]/.
    ;
    ;  *   NOTE 3: This land cover map is primarily used as a land/ocean
    ;      mask in two instances within the MISR ground segment: (1) after
@@ -124,7 +154,8 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;      IDL> rc = map_agp_lc_blocks(168, 108, 114, AGP_VERSION = 'F01_24', $
    ;         /DEBUG, EXCPT_COND = excpt_cond)
    ;      The map of AGP land cover has been saved in
-   ;      [misr_roots[2]]/P168_B108/AGP/map-AGP_P168_B108_B114_LC_F01_24_2018-02-21.png
+   ;      [misr_roots[3]]/P168_B108/AGP/
+   ;         map-AGP_P168_B108_B114_LC_F01_24_2018-02-21.png
    ;
    ;  REFERENCES:
    ;
