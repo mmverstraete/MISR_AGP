@@ -7,6 +7,90 @@
    </head>
 <body>
 <h1>Documentation for the IDL routines in project MISR_AGP</h1>
+<h2>agp_lc_masks</h2>
+<ul>
+<li><p><strong>Purpose:</strong> This function returns an ocean mask and a land mask based on the land cover information available in the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>.</p></li>
+<li><p><strong>Algorithm:</strong> This function retrieves the basic land cover classification for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span> from the relevant <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file and generates 2 binary masks, one for the oceanic regions and one for the land masses, at the specified spatial resolution (either 275 or 1100 m):</p>
+<ul>
+<li><p>The oceanic mask combines the original classes <code>0</code> (shallow ocean) and <code>6</code> (deep ocean): In that mask, those pixels have a value <code>1</code> while non-ocean pixels have a value <code>0</code>.</p></li>
+<li><p>The land mask combines the original classes <code>1</code> (land), <code>2</code> (coastline), <code>3</code> (shallow inland water), <code>4</code> (ephemeral water), and <code>5</code> (deep inland water): In that mask, those pixels have a value <code>1</code> while non-land pixels have a value <code>0</code>.</p></li>
+</ul>
+<p>The masks are generated at the original low spatial resolution (1100 m) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file, and upscaled to the higher spatial resolution (275 m) if requested, usig the function <code>lr2hr.pro</code>.</p></li>
+<li><p><strong>Syntax:</strong> <code>rc = agp_lc_masks(misr_path, misr_block, resol, ocean_mask, $</code><br />
+<code>land_mask, AGP_VERSION = agp_version, VERBOSE = verbose, $</code><br />
+<code>MAPIT = mapit, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<li><p><strong>Positional parameters [Input/Output]:</strong></p>
+<ul>
+<li><p><code>misr_path {INT} [I]:</code> The specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
+<li><p><code>misr_block {INT} [I]:</code> The specified initial <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
+<li><p><code>resol {INT} [I]:</code> The required spatial resolution of the output mask: either <code>275</code> or <code>1100</code> (in m).</p></li>
+<li><p><code>ocean_mask {INT array} [O]:</code> The binary ocean mask.</p></li>
+<li><p><code>land_mask {INT array} [O]:</code> The binary land mask.</p></li>
+</ul></li>
+<li><p><strong>Keyword parameters [Input/Output]:</strong></p>
+<ul>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: &#8217;F01_24&#8217;):</code> The AGP version identifier to use.</p></li>
+<li><p><code>VERBOSE = verbose {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) the generation and saving of a log file in a subfolder of <code>root_dirs[3]</code>.</p></li>
+<li><p><code>MAPIT = mapit {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) the generation and saving of a map of the masks in a subfolder of <code>root_dirs[3]</code>.</p></li>
+<li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
+<li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
+</ul></li>
+<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
+<li><p><strong>Outcome:</strong></p>
+<ul>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The ocean and land binary masks are returned as output positional parameters; a log file is created and saved if the input keyword parameter <code>VERBOSE</code> is set, and maps of both masks are generated and saved if the input keyword parameter <code>MAPIT</code> is set in the call.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The ocean and land binary masks may not exist or may not be reliable, and any requested output file may be inexistent, incomplete or useless.</p></li>
+</ul></li>
+<li><p><strong>Exception conditions:</strong></p>
+<ul>
+<li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
+<li><p>Error 110: The input positional parameter <code>misr_path</code> is invalid.</p></li>
+<li><p>Error 120: The input positional parameters <code>misr_block</code> is invalid.</p></li>
+<li><p>Error 130: The input positional parameters <code>resol</code> is invalid.</p></li>
+<li><p>Error 200: An exception condition occurred in <code>path2str.pro</code>.</p></li>
+<li><p>Error 210: An exception condition occurred in <code>block2str.pro</code> when converting <code>misr_block1</code>.</p></li>
+<li><p>Error 300: The input <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file <code>agp_spec</code> is unreadable.</p></li>
+<li><p>Error 400: The standard output directory <code>out_path</code> is not writable, or an exception condition occurred in <code>is_writable.pro</code>.</p></li>
+<li><p>Error 500: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
+<code>MTK_SETREGION_BY_PATH_BLOCKRANGE</code>.</p></li>
+<li><p>Error 510: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
+<code>MTK_READDATA</code>.</p></li>
+<li><p>Error 520: An exception condition occurred in <code>lr2hr.pro</code> when processing the ocean mask.</p></li>
+<li><p>Error 530: An exception condition occurred in <code>lr2hr.pro</code> when processing the land mask.</p></li>
+</ul></li>
+<li><p><strong>Dependencies:</strong></p>
+<ul>
+<li><p><code>MISR Toolkit</code></p></li>
+<li><p><code>block2str.pro</code></p></li>
+<li><p><code>chk_misr_block.pro</code></p></li>
+<li><p><code>chk_misr_path.pro</code></p></li>
+<li><p><code>is_readable.pro</code></p></li>
+<li><p><code>is_writable.pro</code></p></li>
+<li><p><code>lr2hr.pro</code></p></li>
+<li><p><code>path2str.pro</code></p></li>
+<li><p><code>set_root_dirs.pro</code></p></li>
+<li><p><code>strstr.pro</code></p></li>
+<li><p><code>today.pro</code></p></li>
+</ul></li>
+<li><p><strong>Remarks:</strong> None.</p></li>
+<li><p><strong>Examples:</strong></p>
+<pre><code>IDL&gt; misr_path = 168
+IDL&gt; misr_block = 112
+IDL&gt; resol = 275
+IDL&gt; agp_lc_masks(misr_path, misr_block, resol, ocean_mask, $
+   land_mask, /VERBOSE, /MAPIT, /DEBUG, EXCPT_COND = excpt_cond)
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
+<li><p><strong>References:</strong></p>
+<ul>
+<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) MISR Data Products Specifications, JPL D-13963, Revision S, Section 9.4, p. 210.</p></li>
+</ul></li>
+<li><p><strong>Versioning:</strong></p>
+<ul>
+<li><p>2018&#8211;05&#8211;13: Version 0.9 &#8212; Initial release.</p></li>
+<li><p>2018&#8211;05&#8211;14: Version 1.0 &#8212; Initial public release.</p></li>
+</ul></li>
+</ul>
 <h2>get_agp_file</h2>
 <ul>
 <li><p><strong>Purpose:</strong> This function provides the file specification (path + name) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file corresponding to the given <code>misr_path</code> and optional <code>agp_version</code>, if they are available in the expected input folder (defined by the function <code>set_root_dirs</code>) on the current computer.</p></li>
@@ -34,10 +118,10 @@
 <ul>
 <li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
 <li><p>Error 110: Input argument <code>misr_path</code> is invalid.</p></li>
-<li><p>Error 210: An exception condition occurred in function <code>path2str</code>.</p></li>
+<li><p>Error 210: An exception condition occurred in function <code>path2str.pro</code>.</p></li>
 <li><p>Error 300: No <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
 <li><p>Error 310: More than 1 <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
-<li><p>Error 320: A <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found but it is unreadable.</p></li>
+<li><p>Error 320: An exception condition occurred in function <code>is_readable.pro</code>.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
@@ -112,8 +196,8 @@ agp_fspec =
 <li><p>Error 300: An exception condition occurred in <code>get_agp_file.pro</code>.</p></li>
 <li><p>Error 310: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_SETREGION_BY_PATH_BLOCKRANGE</code>.</p></li>
-<li><p>Error 320: The output folder to contain the land cover map exists but is not writable.</p></li>
-<li><p>Error 400: The sum of the numbers of pixels in the 7 land cover types does not match the total number of pixels in the <span class="smallcaps">AGP</span> file.</p></li>
+<li><p>Error 400: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
+<li><p>Error 500: The sum of the numbers of pixels in the 7 land cover types does not match the total number of pixels in the <span class="smallcaps">AGP</span> file.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
@@ -151,6 +235,7 @@ The map of AGP land cover has been saved in
 <li><p>2017&#8211;12&#8211;10: Version 0.9 &#8212; Initial release.</p></li>
 <li><p>2018&#8211;03&#8211;10: Version 1.0 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;04&#8211;08: Version 1.1 &#8212; Update this function to use <code>set_root_dirs.pro</code> instead of <code>set_misr_roots.pro</code>, and update the documentation.</p></li>
+<li><p>2018&#8211;05&#8211;12: Version 1.2 &#8212; Modify the names and standard locations of the output files.</p></li>
 </ul></li>
 </ul>
 </body>

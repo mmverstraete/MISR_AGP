@@ -60,13 +60,15 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ;
    ;  *   Error 110: Input argument misr_path is invalid.
    ;
-   ;  *   Error 210: An exception condition occurred in function path2str.
+   ;  *   Error 210: An exception condition occurred in function
+   ;      path2str.pro.
    ;
    ;  *   Error 300: No MISR AGP file has been found.
    ;
    ;  *   Error 310: More than 1 MISR AGP file has been found.
    ;
-   ;  *   Error 320: A MISR AGP file has been found but it is unreadable.
+   ;  *   Error 320: An exception condition occurred in function
+   ;      is_readable.pro.
    ;
    ;  DEPENDENCIES:
    ;
@@ -191,7 +193,7 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ENDIF
 
    ;  If no agp_version number is specified, use Version 'F01_24':
-   IF NOT(KEYWORD_SET(agp_version)) THEN agp_version = 'F01_24'
+   IF (~KEYWORD_SET(agp_version)) THEN agp_version = 'F01_24'
 
    ;  Set the root directories for the MISR-HR project:
    root_dirs = set_root_dirs()
@@ -205,7 +207,6 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    files = FILE_SEARCH(agp_fspec, COUNT = nfiles)
 
    IF (debug) THEN BEGIN
-
       IF (nfiles EQ 0) THEN BEGIN
          info = SCOPE_TRACEBACK(/STRUCTURE)
          rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
@@ -225,15 +226,17 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ENDIF
    agp_fspec = files[0]
 
-   ;  Check that this file is readable:
+   ;  Return to the calling routine with an error message if the input
+   ;  file 'agp_fspec' does not exist or is unreadable:
    IF (debug) THEN BEGIN
       rc = is_readable(agp_fspec, DEBUG = debug, EXCPT_COND = excpt_cond)
-      IF (rc NE 1) THEN BEGIN
+      IF (rc LT 1) THEN BEGIN
          info = SCOPE_TRACEBACK(/STRUCTURE)
          rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
          error_code = 320
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
+         RETURN, error_code
       ENDIF
    ENDIF
 
