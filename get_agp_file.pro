@@ -162,12 +162,10 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
 
    IF (debug) THEN BEGIN
 
-   ;  Return to the calling routine with an error message if this function is
-   ;  called with the wrong number of required positional parameters:
+   ;  Return to the calling routine with an error message if one or more
+   ;  positional parameters are missing:
       n_reqs = 2
       IF (N_PARAMS() NE n_reqs) THEN BEGIN
-         info = SCOPE_TRACEBACK(/STRUCTURE)
-         rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
          error_code = 100
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': Routine must be called with ' + strstr(n_reqs) + $
@@ -179,8 +177,6 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ;  called with invalid misr_path or misr_orbit arguments:
       rc = chk_misr_path(misr_path, DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         info = SCOPE_TRACEBACK(/STRUCTURE)
-         rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
          error_code = 110
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
@@ -195,8 +191,6 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    rc = path2str(misr_path, misr_path_str, $
       DEBUG = debug, EXCPT_COND = excpt_cond)
    IF ((debug) AND (rc NE 0)) THEN BEGIN
-      info = SCOPE_TRACEBACK(/STRUCTURE)
-      rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
       error_code = 210
       excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
          ': ' + excpt_cond
@@ -213,16 +207,12 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    files = FILE_SEARCH(agp_fspec, COUNT = nfiles)
    IF (debug) THEN BEGIN
       IF (nfiles EQ 0) THEN BEGIN
-         info = SCOPE_TRACEBACK(/STRUCTURE)
-         rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
          error_code = 400
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': No AGP file was found for Path ' + misr_path_str + '.'
          RETURN, error_code
       ENDIF
       IF (nfiles GT 1) THEN BEGIN
-         info = SCOPE_TRACEBACK(/STRUCTURE)
-         rout_name = info[N_ELEMENTS(info) - 1].ROUTINE
          error_code = 410
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': More than one AGP file was found for Path ' + misr_path_str + '.'

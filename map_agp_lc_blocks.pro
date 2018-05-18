@@ -234,8 +234,8 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
 
    IF (debug) THEN BEGIN
 
-   ;  Return to the calling routine with an error message if this function is
-   ;  called with the wrong number of required positional parameters:
+   ;  Return to the calling routine with an error message if one or more
+   ;  positional parameters are missing:
       n_reqs = 3
       IF (N_PARAMS() NE n_reqs) THEN BEGIN
          error_code = 100

@@ -215,8 +215,8 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
 
    IF (debug) THEN BEGIN
 
-   ;  Return to the calling routine with an error message if this function is
-   ;  called with the wrong number of required positional parameters:
+   ;  Return to the calling routine with an error message if one or more
+   ;  positional parameters are missing:
       n_reqs = 4
       IF (N_PARAMS() NE n_reqs) THEN BEGIN
          error_code = 100
