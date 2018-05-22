@@ -49,7 +49,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;  *   resol {INT} [I]: The required spatial resolution of the output
    ;      mask: either 275 or 1100 (in m).
    ;
-   ;  *   masks INT array [O]: The array of 7 binary masks.
+   ;  *   masks {INT array} [O]: The array of 7 binary masks.
    ;
    ;  KEYWORD PARAMETERS [INPUT/OUTPUT]:
    ;
@@ -81,7 +81,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;      set and if the optional output keyword parameter EXCPT_COND is
    ;      provided in the call. The array of binary masks is returned as
    ;      output positional parameter; a log file is created and saved if
-   ;      the input keyword parameter VERBOSE is set, and maps of both
+   ;      the input keyword parameter VERBOSE is set, and maps of these
    ;      masks are generated and saved if the input keyword parameter
    ;      MAPIT is set in the call.
    ;
@@ -113,10 +113,12 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;  *   Error 210: An exception condition occurred in block2str.pro.
    ;
    ;  *   Error 300: An exception condition occurred in the MISR TOOLKIT
-   ;      routine MTK_SETREGION_BY_PATH_BLOCKRANGE.
+   ;      routine
+   ;      MTK_SETREGION_BY_PATH_BLOCKRANGE.
    ;
    ;  *   Error 310: An exception condition occurred in the MISR TOOLKIT
-   ;      routine MTK_READDATA.
+   ;      routine
+   ;      MTK_READDATA.
    ;
    ;  *   Error 320: An exception condition occurred in lr2hr.pro.
    ;
@@ -152,7 +154,14 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;
    ;  EXAMPLES:
    ;
-   ;      [Insert the command and its outcome]
+   ;      IDL> misr_path = 168
+   ;      IDL> misr_block = 111
+   ;      IDL> resol = 1100
+   ;      IDL> rc = make_agp_masks(misr_path, misr_block, $
+   ;         resol, masks, /VERBOSE, /MAPIT, $
+   ;         /DEBUG, EXCPT_COND = excpt_cond)
+   ;      IDL> PRINT, 'rc = ' + strstr(rc) + ', excpt_cond = >' + excpt_cond + '<'
+   ;      rc = 0 and excpt_cond = ><
    ;
    ;  REFERENCES:
    ;
