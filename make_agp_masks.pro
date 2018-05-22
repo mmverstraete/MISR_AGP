@@ -34,7 +34,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;
    ;  The masks are generated at the original low spatial resolution
    ;  (1100 m) of the MISR AGP file, and upscaled to the higher spatial
-   ;  resolution (275 m) if requested, usig the function lr2hr.pro.
+   ;  resolution (275 m) if requested, using the function lr2hr.pro.
    ;
    ;  SYNTAX: rc = agp_lc_masks(misr_path, misr_block, resol, masks, $
    ;  AGP_VERSION = agp_version, VERBOSE = verbose, MAPIT = mapit, $
