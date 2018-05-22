@@ -36,7 +36,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;  (1100 m) of the MISR AGP file, and upscaled to the higher spatial
    ;  resolution (275 m) if requested, usig the function lr2hr.pro.
    ;
-   ;  SYNTAX: rc = agp_lc_(misr_path, misr_block, resol, masks, $
+   ;  SYNTAX: rc = agp_lc_masks(misr_path, misr_block, resol, masks, $
    ;  AGP_VERSION = agp_version, VERBOSE = verbose, MAPIT = mapit, $
    ;  DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
@@ -105,6 +105,9 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;
    ;  *   Error 130: The input positional parameters resol is invalid.
    ;
+   ;  *   Error 199: Unrecognized computer: Update the function
+   ;      set_root_dirs.
+   ;
    ;  *   Error 200: An exception condition occurred in path2str.pro.
    ;
    ;  *   Error 210: An exception condition occurred in block2str.pro.
@@ -164,7 +167,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;
    ;  *   2018–05–15: Version 1.0 — Initial public release.
    ;
-   ;  *   2018–05–17: Version 1.5 — Implement new coding standards.
+   ;  *   2018–05–18: Version 1.5 — Implement new coding standards.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -263,6 +266,12 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
 
    ;  Set the standard locations for MISR files on this computer:
    root_dirs = set_root_dirs()
+   IF ((debug) AND (root_dirs[0] EQ 'Unrecognized computer')) THEN BEGIN
+      error_code = 199
+      excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
+         ': Unrecognized computer.'
+      RETURN, error_code
+   ENDIF
 
    ;  Get today's date and time:
    date_time = today(FMT = 'nice')

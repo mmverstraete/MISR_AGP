@@ -60,6 +60,9 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
    ;
    ;  *   Error 110: Input argument misr_path is invalid.
    ;
+   ;  *   Error 199: Unrecognized computer: Update the function
+   ;      set_root_dirs.
+   ;
    ;  *   Error 210: An exception condition occurred in function
    ;      path2str.pro.
    ;
@@ -186,6 +189,12 @@ FUNCTION get_agp_file, misr_path, agp_fspec, $
 
    ;  Set the standard locations for MISR and MISR-HR files on this computer:
    root_dirs = set_root_dirs()
+   IF ((debug) AND (root_dirs[0] EQ 'Unrecognized computer')) THEN BEGIN
+      error_code = 199
+      excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
+         ': Unrecognized computer.'
+      RETURN, error_code
+   ENDIF
 
    ;  Set the string version of the MISR Path number:
    rc = path2str(misr_path, misr_path_str, $

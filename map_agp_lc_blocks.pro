@@ -85,6 +85,9 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;  *   Error 130: The input positional parameters MISR BLOCK2 is
    ;      invalid.
    ;
+   ;  *   Error 199: Unrecognized computer: Update the function
+   ;      set_root_dirs.
+   ;
    ;  *   Error 200: An exception condition occurred in path2str.pro.
    ;
    ;  *   Error 210: An exception condition occurred in block2str.pro.
@@ -183,7 +186,7 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
    ;  *   2018–05–12: Version 1.2 — Modify the names and standard
    ;      locations of the output files.
    ;
-   ;  *   2018–05–16: Version 1.5 — Implement new coding standards.
+   ;  *   2018–05–18: Version 1.5 — Implement new coding standards.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -286,6 +289,12 @@ FUNCTION map_agp_lc_blocks, misr_path, misr_block1, misr_block2, $
 
    ;  Set the standard locations for MISR and MISR-HR files on this computer:
    root_dirs = set_root_dirs()
+   IF ((debug) AND (root_dirs[0] EQ 'Unrecognized computer')) THEN BEGIN
+      error_code = 199
+      excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
+         ': Unrecognized computer.'
+      RETURN, error_code
+   ENDIF
 
    ;  Get today's date and time:
    date_time = today(FMT = 'nice')
