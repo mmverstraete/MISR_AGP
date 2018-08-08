@@ -83,7 +83,7 @@ agp_fspec =
 <li><p><code>landcover code 6:</code> Deep ocean, navy.</p></li>
 </ul>
 <p>The masks are generated at the original low spatial resolution (1100 m) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file, and upscaled to the higher spatial resolution (275 m) if requested, using the function <code>lr2hr.pro</code>.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = agp_lc_masks(misr_path, misr_block, resol, masks, $</code><br />
+<li><p><strong>Syntax:</strong> <code>rc = make_agp_masks(misr_path, misr_block, resol, masks, $</code><br />
 <code>AGP_VERSION = agp_version, VERBOSE = verbose, MAPIT = mapit, $</code><br />
 <code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
@@ -138,7 +138,11 @@ agp_fspec =
 <li><p><code>strstr.pro</code></p></li>
 <li><p><code>today.pro</code></p></li>
 </ul></li>
-<li><p><strong>Remarks:</strong> None.</p></li>
+<li><p><strong>Remarks:</strong></p>
+<ul>
+<li><p><strong>Note 1:</strong> Land cover information is provided by the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file everywhere: there is no concept of fill values in this context.</p></li>
+<li><p><strong>Note 2:</strong> Setting the <code>resol</code> input positional parameter to 275 generates a set of &#8216;high-resolution&#8217; land cover masks by duplicating the low-resolution information contained in the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file: it does not provide more detailed information than what is available in that source file.</p></li>
+</ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
 IDL&gt; misr_block = 111
@@ -146,7 +150,7 @@ IDL&gt; resol = 1100
 IDL&gt; rc = make_agp_masks(misr_path, misr_block, $
    resol, masks, /VERBOSE, /MAPIT, $
    /DEBUG, EXCPT_COND = excpt_cond)
-IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39; and excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
 rc = 0 and excpt_cond = &gt;&lt;</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
@@ -157,6 +161,72 @@ rc = 0 and excpt_cond = &gt;&lt;</code></pre></li>
 <li><p>2018&#8211;05&#8211;13: Version 0.9 &#8212; Initial release.</p></li>
 <li><p>2018&#8211;05&#8211;15: Version 1.0 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;05&#8211;18: Version 1.5 &#8212; Implement new coding standards.</p></li>
+<li><p>2018&#8211;08&#8211;02: Version 1.6 &#8212; Update documentation.</p></li>
+</ul></li>
+</ul>
+<h2>make_land_water_masks</h2>
+<ul>
+<li><p><strong>Purpose:</strong> This function generates the simplified land and water masks needed by the <code>best_fits_l1b2</code> routine to enable the replacement of missing values in <span class="smallcaps">L1B2</span> files by reasonable estimates.</p></li>
+<li><p><strong>Algorithm:</strong> This function relies on the <span class="smallcaps">MISR-HR</span> function <code>make_agp_masks.pro</code>, which returns masks for the 7 standard <span class="smallcaps">AGP</span> surface cover types and combines 3 categories (&#8216;0: shallow ocean&#8217;, &#8216;5: deep inland water&#8217; and &#8216;6: deep ocean&#8217;) into the water mask, and the other 4 categories (&#8216;1: land&#8217;, &#8216;2: coastline&#8217;, &#8216;3: shallow inland water&#8217; and &#8216;4: ephemeral water&#8217;) into the land mask. The default spatial resolution of these masks is 1100 m; set the input positional parameter <code>resol</code> to <code>275</code> if the masks are required at the high spatial resolution version (275 m). In this case, the <span class="smallcaps">MISR-HR</span> function <code>lr2hr.pro</code> is called to upsize the arrays.</p></li>
+<li><p><strong>Syntax:</strong> <code>rc = make_land_water_masks(misr_path, misr_block, resol, $</code><br />
+<code>land_mask, water_mask, AGP_VERSION = agp_version, $</code><br />
+<code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<li><p><strong>Positional parameters [Input/Output]:</strong></p>
+<ul>
+<li><p><code>misr_path {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
+<li><p><code>misr_block {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
+<li><p><code>resol {INTEGER} [I]:</code> The spatial resolution at which the land and water masks are required.</p></li>
+<li><p><code>land_mask {BYTE array} [O]:</code> The land mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+<li><p><code>water_mask {BYTE array} [O]:</code> The water mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+</ul></li>
+<li><p><strong>Keyword parameters [Input/Output]:</strong></p>
+<ul>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: &#8217;F01_24&#8217;):</code> The AGP version identifier to use.</p></li>
+<li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
+<li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
+</ul></li>
+<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
+<li><p><strong>Outcome:</strong></p>
+<ul>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The output positional parameters <code>land_mask</code> and <code>water_mask</code> contain the desired masks.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. Output positional parameters <code>land_mask</code> and <code>water_mask</code> may be undefined, inexistent, incomplete or useless.</p></li>
+</ul></li>
+<li><p><strong>Exception conditions:</strong></p>
+<ul>
+<li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
+<li><p>Error 110: Input positional parameter <code>misr_path</code> is invalid.</p></li>
+<li><p>Error 120: Input positional parameter <code>misr_block</code> is invalid.</p></li>
+<li><p>Error 130: Input positional parameter <code>resol</code> is invalid.</p></li>
+<li><p>Error 200: An exception condition occurred in <code>make_agp_masks.pro</code>.</p></li>
+</ul></li>
+<li><p><strong>Dependencies:</strong></p>
+<ul>
+<li><p><code>chk_misr_block.pro</code></p></li>
+<li><p><code>chk_misr_path.pro</code></p></li>
+<li><p><code>make_agp_masks.pro</code></p></li>
+<li><p><code>strstr.pro</code></p></li>
+</ul></li>
+<li><p><strong>Remarks:</strong></p>
+<ul>
+<li><p><strong>Note 1:</strong> The land and the water masks generated by this function are based on static information on the spatial distribution of surface geophysical types: they are valid for all cameras and throughout the <span class="smallcaps">MISR</span> mission.</p></li>
+<li><p><strong>Note 2:</strong> Although the underlying <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> data distinguishes between various types of geophysical media, this is not meant to be an accurate land cover map, let alone a source of information on land cover change.</p></li>
+</ul></li>
+<li><p><strong>Examples:</strong></p>
+<pre><code>IDL&gt; misr_path = 168
+IDL&gt; misr_block = 110
+IDL&gt; resol = 275
+IDL&gt; rc = make_land_water_masks(misr_path, misr_block, resol, land_mask, $
+   water_mask, AGP_VERSION = agp_version, /DEBUG, EXCPT_COND = excpt_cond)
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, and excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+rc = 0, and excpt_cond = &gt;&lt;</code></pre></li>
+<li><p><strong>References:</strong></p>
+<ul>
+<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
+</ul></li>
+<li><p><strong>Versioning:</strong></p>
+<ul>
+<li><p>2018&#8211;08&#8211;03: Version 0.9 &#8212; Initial release.</p></li>
+<li><p>2018&#8211;08&#8211;08: Version 1.0 &#8212; Initial public release.</p></li>
 </ul></li>
 </ul>
 <h2>map_agp_lc_blocks</h2>

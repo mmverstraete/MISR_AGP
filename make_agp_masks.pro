@@ -36,7 +36,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;  (1100 m) of the MISR AGP file, and upscaled to the higher spatial
    ;  resolution (275 m) if requested, using the function lr2hr.pro.
    ;
-   ;  SYNTAX: rc = agp_lc_masks(misr_path, misr_block, resol, masks, $
+   ;  SYNTAX: rc = make_agp_masks(misr_path, misr_block, resol, masks, $
    ;  AGP_VERSION = agp_version, VERBOSE = verbose, MAPIT = mapit, $
    ;  DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
@@ -150,7 +150,16 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;
    ;  *   today.pro
    ;
-   ;  REMARKS: None.
+   ;  REMARKS:
+   ;
+   ;  *   NOTE 1: Land cover information is provided by the MISR AGP file
+   ;      everywhere: there is no concept of fill values in this context.
+   ;
+   ;  *   NOTE 2: Setting the resol input positional parameter to 275
+   ;      generates a set of ‘high-resolution’ land cover masks by
+   ;      duplicating the low-resolution information contained in the MISR
+   ;      AGP file: it does not provide more detailed information than
+   ;      what is available in that source file.
    ;
    ;  EXAMPLES:
    ;
@@ -160,7 +169,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;      IDL> rc = make_agp_masks(misr_path, misr_block, $
    ;         resol, masks, /VERBOSE, /MAPIT, $
    ;         /DEBUG, EXCPT_COND = excpt_cond)
-   ;      IDL> PRINT, 'rc = ' + strstr(rc) + ', excpt_cond = >' + excpt_cond + '<'
+   ;      IDL> PRINT, 'rc = ' + strstr(rc) + ' and excpt_cond = >' + excpt_cond + '<'
    ;      rc = 0 and excpt_cond = ><
    ;
    ;  REFERENCES:
@@ -177,6 +186,8 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    ;  *   2018–05–15: Version 1.0 — Initial public release.
    ;
    ;  *   2018–05–18: Version 1.5 — Implement new coding standards.
+   ;
+   ;  *   2018–08–02: Version 1.6 — Update documentation.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -476,7 +487,7 @@ FUNCTION make_agp_masks, misr_path, misr_block, resol, masks, $
    n_pts[6] = LONG(n)
    masks[6, *, *] = map_6
 
-   ;  Generate the graphic maps is requested: Sine each map is a BYTE array
+   ;  Generate the graphic maps if requested: Since each map is a BYTE array
    ;  of values 0 or 1, colors can be assigned by simply multiplying the
    ;  values of these arrays by the color code:
    IF (KEYWORD_SET(mapit)) THEN BEGIN
