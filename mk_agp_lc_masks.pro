@@ -239,16 +239,30 @@ FUNCTION mk_agp_lc_masks, $
    ;  EXAMPLES:
    ;
    ;      IDL> misr_path = 168
-   ;      IDL> misr_block = 111
+   ;      IDL> misr_block = 112
    ;      IDL> misr_resol = 1100
-   ;      IDL> rc = mk_agp_lc_masks(misr_path, misr_block, $
-   ;         misr_resol, landcover, agp_masks, $
-   ;         AGP_FOLDER = '', AGP_VERSION = '', $
-   ;         /LOG_IT, LOG_FOLDER = '', $
-   ;         /MAP_IT, MAP_FOLDER = '', $
-   ;         /DEBUG, EXCPT_COND = excpt_cond)
-   ;      IDL> PRINT, 'rc = ' + strstr(rc) + ', excpt_cond = >' + excpt_cond + '<'
-   ;      rc = 0, excpt_cond = ><
+   ;      IDL> AGP_FOLDER = ''
+   ;      IDL> AGP_VERSION = ''
+   ;      IDL> LOG_IT = 1
+   ;      IDL> LOG_FOLDER = ''
+   ;      IDL> MAP_IT = 1
+   ;      IDL> MAP_FOLDER = ''
+   ;      IDL> DEBUG = 1
+   ;      IDL> c = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $
+   ;         landcover, agp_masks, $
+   ;         AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   ;         LOG_IT = log_it, LOG_FOLDER = log_folder, $
+   ;         MAP_IT = map_it, MAP_FOLDER = map_folder, $
+   ;         DEBUG = debug, EXCPT_COND = excpt_cond)
+   ;      IDL> rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $
+   ;         landcover, agp_masks, $
+   ;         AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   ;         LOG_IT = log_it, LOG_FOLDER = log_folder, $
+   ;         MAP_IT = map_it, MAP_FOLDER = map_folder, $
+   ;         DEBUG = debug, EXCPT_COND = excpt_cond)
+   ;      IDL> IF (rc EQ 0) THEN PRINT, 'Processing nominal.' $
+   ;         ELSE PRINT, 'excpt_cond = >' + excpt_cond + '<'
+   ;      Processing nominal.
    ;
    ;  REFERENCES:
    ;

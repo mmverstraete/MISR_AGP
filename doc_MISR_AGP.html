@@ -174,16 +174,30 @@ Within each individual land cover class mask, each pixel is assigned the value <
 </ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
-IDL&gt; misr_block = 111
+IDL&gt; misr_block = 112
 IDL&gt; misr_resol = 1100
-IDL&gt; rc = mk_agp_lc_masks(misr_path, misr_block, $
-   misr_resol, landcover, agp_masks, $
-   AGP_FOLDER = &#39;&#39;, AGP_VERSION = &#39;&#39;, $
-   /LOG_IT, LOG_FOLDER = &#39;&#39;, $
-   /MAP_IT, MAP_FOLDER = &#39;&#39;, $
-   /DEBUG, EXCPT_COND = excpt_cond)
-IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
-rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
+IDL&gt; AGP_FOLDER = &#39;&#39;
+IDL&gt; AGP_VERSION = &#39;&#39;
+IDL&gt; LOG_IT = 1
+IDL&gt; LOG_FOLDER = &#39;&#39;
+IDL&gt; MAP_IT = 1
+IDL&gt; MAP_FOLDER = &#39;&#39;
+IDL&gt; DEBUG = 1
+IDL&gt; c = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $
+   landcover, agp_masks, $
+   AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   LOG_IT = log_it, LOG_FOLDER = log_folder, $
+   MAP_IT = map_it, MAP_FOLDER = map_folder, $
+   DEBUG = debug, EXCPT_COND = excpt_cond)
+IDL&gt; rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $
+   landcover, agp_masks, $
+   AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   LOG_IT = log_it, LOG_FOLDER = log_folder, $
+   MAP_IT = map_it, MAP_FOLDER = map_folder, $
+   DEBUG = debug, EXCPT_COND = excpt_cond)
+IDL&gt; IF (rc EQ 0) THEN PRINT, &#39;Processing nominal.&#39; $
+   ELSE PRINT, &#39;excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+Processing nominal.</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
 <li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
