@@ -7,53 +7,59 @@
    </head>
 <body>
 <h1>Documentation for the IDL routines in project MISR_AGP</h1>
-<h2>get_agp_file</h2>
+<h2>find_agp_file</h2>
 <ul>
-<li><p><strong>Purpose:</strong> This function provides the file specification (path + name) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file corresponding to the given <code>misr_path</code> and optional <code>agp_version</code>, if they are available in the expected input folder (defined by the function <code>set_root_dirs</code>) on the current computer.</p></li>
-<li><p><strong>Algorithm:</strong> This function searches the folder <code>root_dirs[0]</code> for an <span class="smallcaps">AGP</span> file of the optionally specified version, and provides the full file specification (path and name) of that file if it is found, in the output positional argument <code>agp_fspec</code>.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = get_agp_file(misr_path, agp_fspec, $</code><br />
-<code>AGP_VERSION = agp_version, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<li><p><strong>Purpose:</strong> This function provides the file specification (path + name) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file corresponding to the given <code>misr_path</code> and optional <code>agp_version</code>, if it is available either in the default folder (defined by the function <code>set_roots_vers.pro</code>), or in the folder specified by the optional input keyword parameter <code>agp_folder</code>.</p></li>
+<li><p><strong>Algorithm:</strong> This function searches the folder <code>root_dirs[0]</code>, or the folder specified by the optional input keyword parameter <code>agp_folder</code>, if provided, for the <span class="smallcaps">AGP</span> file corresponding to the input positional parameter <code>misr_path</code> and the optionally specified version, and provides the full file specification (path and name) of that file if it is found, through the output positional argument <code>agp_fspec</code>.</p></li>
+<li><p><strong>Syntax:</strong> <code>rc = find_agp_file(misr_path, agp_fspec, $</code><br />
+<code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
+<code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>misr_path {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
+<li><p><code>misr_path {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
 <li><p><code>agp_fspec {STRING} [O]:</code> The file specification of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file for the selected <span class="smallcaps">Path</span>.</p></li>
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: &#8217;F01_24&#8217;):</code> The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> version to use.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
-<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
+<li><p><strong>Returned value type:</strong> <code>INT</code>.</p></li>
 <li><p><strong>Outcome:</strong></p>
 <ul>
-<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. The output positional parameter <code>agp_fspec</code> contains the full specification for the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file.</p></li>
-<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The output positional parameter <code>agp_fspec</code> is set to a null string.</p></li>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. The output positional parameter <code>agp_fspec</code> contains the full specification of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The output positional parameter <code>agp_fspec</code> may be inexistent, incomplete or incorrect.</p></li>
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
 <ul>
 <li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
 <li><p>Error 110: Input argument <code>misr_path</code> is invalid.</p></li>
-<li><p>Error 199: Unrecognized computer: Update the function <code>set_root_dirs</code>.</p></li>
-<li><p>Error 210: An exception condition occurred in function <code>path2str.pro</code>.</p></li>
-<li><p>Error 400: No <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
-<li><p>Error 410: More than 1 <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
-<li><p>Error 420: An exception condition occurred in function <code>is_readable.pro</code>.</p></li>
+<li><p>Error 199: An exception condition occurred in function <code>set_roots_vers</code>.</p></li>
+<li><p>Error 200: An exception condition occurred in function <code>path2str.pro</code>.</p></li>
+<li><p>Error 210: This computer is unrecognized and no alternate directory address to the <span class="smallcaps">AGP</span> folder is provided.</p></li>
+<li><p>Error 300: No <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
+<li><p>Error 310: More than 1 <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
+<li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file exists but is unreadable.</p></li>
+<li><p>Error 330: An exception condition occurred in function <code>is_readable.pro</code>.</p></li>
+<li><p>Error 340: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file does not exist.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
+<li><p><code>MISR Toolkit</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
 <li><p><code>is_readable.pro</code></p></li>
 <li><p><code>path2str.pro</code></p></li>
-<li><p><code>set_root_dirs.pro</code></p></li>
+<li><p><code>set_roots_vers.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
 </ul></li>
 <li><p><strong>Remarks:</strong> None.</p></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
-IDL&gt; rc = get_agp_file(misr_path, agp_fspec, $
-   AGP_VERSION = agp_version, /DEBUG, $
-   EXCPT_COND = excpt_cond)
+IDL&gt; rc = find_agp_file(misr_path, agp_fspec, $
+   AGP_FOLDER = &#39;&#39;, AGP_VERSION = agp_version, $
+   /DEBUG, EXCPT_COND = excpt_cond)
 IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, $
    excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
 rc = 0, excpt_cond = &gt;&lt;
@@ -67,62 +73,83 @@ agp_fspec =
 <li><p>2018&#8211;03&#8211;26: Version 1.1 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;04&#8211;08: Version 1.2 &#8212; Update this function to use <code>set_root_dirs.pro</code> instead of <code>set_misr_roots.pro</code>.</p></li>
 <li><p>2018&#8211;05&#8211;16: Version 1.5 &#8212; Implement new coding standards.</p></li>
+<li><p>2018&#8211;12&#8211;15: Version 1.6 &#8212; Add the optional input keyword parameter <code>AGP_FOLDER</code>.</p></li>
+<li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 </ul></li>
 </ul>
-<h2>make_agp_masks</h2>
+<h2>mk_agp_lc_masks</h2>
 <ul>
-<li><p><strong>Purpose:</strong> This function returns an array of 7 masks based on the landcover information available in the <span class="smallcaps">AGP</span> file for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>.</p></li>
-<li><p><strong>Algorithm:</strong> This function retrieves the basic landcover classification for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span> from the relevant <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file and generates 7 individual binary masks, one for each recognized class, at the specified spatial resolution (either 275 or 1100 m). Within each mask, each pixel is assigned the value <code>0</code> if that location does not belong to that class, or a non-zero <code>BYTE</code> color code if it does. A log file is generated if the optional keyword parameter <code>VERBOSE</code> is specified, and each mask is also saved as a map if the optional keyword parameter <code>MAPIT</code> is set. In that case, the land cover categories are assigned the following colors:</p>
+<li><p><strong>Purpose:</strong> This function sets the output positional parameter <code>landcover</code> to a single 2D array containing the land cover classification (7 classes) based on the information available in the <span class="smallcaps">AGP</span> file for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, and the output positional parameter <code>agp_masks</code> to an array of 7 landcover masks, one per defined class.</p></li>
+<li><p><strong>Algorithm:</strong> This function retrieves the basic landcover classification for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span> from the relevant <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file and generates 7 individual binary masks, one for each recognized class, at the specified spatial resolution (either 275 or 1100 m), as well as an overall array containing all classes.<br />
+Within each individual land cover class mask, each pixel is assigned the value <code>0B</code> if that location does not belong to that class, or <code>1B</code> if it does. A log file is generated if the optional keyword parameter <code>LOG_IT</code> is specified, and each of the 8 masks is also saved as a map if the optional keyword parameter <code>MAP_IT</code> is set. In that case, the land cover classes are assigned the following colors:</p>
 <ul>
 <li><p><code>landcover code 0:</code> Shallow ocean, blue.</p></li>
 <li><p><code>landcover code 1:</code> Land, green.</p></li>
-<li><p><code>landcover code 2:</code> Coastline, sand.</p></li>
+<li><p><code>landcover code 2:</code> Coastline, tan.</p></li>
 <li><p><code>landcover code 3:</code> Shallow inland water, cyan.</p></li>
 <li><p><code>landcover code 4:</code> Ephemeral water, turquoise.</p></li>
 <li><p><code>landcover code 5:</code> Deep inland water, purple.</p></li>
 <li><p><code>landcover code 6:</code> Deep ocean, navy.</p></li>
 </ul>
 <p>The masks are generated at the original low spatial resolution (1100 m) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file, and upscaled to the higher spatial resolution (275 m) if requested, using the function <code>lr2hr.pro</code>.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = make_agp_masks(misr_path, misr_block, resol, masks, $</code><br />
-<code>AGP_VERSION = agp_version, VERBOSE = verbose, MAPIT = mapit, $</code><br />
+<li><p><strong>Syntax:</strong> <code>rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, landcover, agp_masks, $</code><br />
+<code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
+<code>LOG_IT = log_it, LOG_FOLDER = log_folder, MAP_IT = map_it, MAP_FOLDER = map_folder$</code><br />
 <code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
 <li><p><code>misr_path {INT} [I]:</code> The specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
 <li><p><code>misr_block {INT} [I]:</code> The specified initial <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
-<li><p><code>resol {INT} [I]:</code> The required spatial resolution of the output mask: either 275 or 1100 (in m).</p></li>
-<li><p><code>masks {INT array} [O]:</code> The array of 7 binary masks.</p></li>
+<li><p><code>misr_resol {INT} [I]:</code> The required spatial resolution of the output mask: either 275 or 1100 (in m).</p></li>
+<li><p><code>landcover {BYTE array} [O]:</code> The landcover information contained in the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>.</p></li>
+<li><p><code>agp_masks {BYTE array} [O]:</code> The array of 7 binary masks, one per landcover class, for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>.</p></li>
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: &#8217;F01_24&#8217;):</code> The AGP version identifier to use.</p></li>
-<li><p><code>VERBOSE = verbose {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of a log file in a subfolder of <code>root_dirs[3]</code>.</p></li>
-<li><p><code>MAPIT = mapit {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of maps of the masks in a subfolder of <code>root_dirs[3]</code>.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>LOG_IT = log_it {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of a log file.</p></li>
+<li><p><code>LOG_FOLDER = log_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the log file, if it should not be saved in the default location.</p></li>
+<li><p><code>MAP_IT = map_it {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of maps of the land cover masks.</p></li>
+<li><p><code>MAP_FOLDER = map_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the map files, if they should not be saved in the default location.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
-<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
+<li><p><strong>Returned value type:</strong> <code>INT</code>.</p></li>
 <li><p><strong>Outcome:</strong></p>
 <ul>
-<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The array of binary masks is returned as output positional parameter; a log file is created and saved if the input keyword parameter <code>VERBOSE</code> is set, and maps of these masks are generated and saved if the input keyword parameter <code>MAPIT</code> is set in the call.</p></li>
-<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The array of binary masks may not be defined, and any requested output file may be inexistent, incomplete or useless.</p></li>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The landcover and the array of binary masks are returned as output positional parameter; a log file is created and saved if the input keyword parameter <code>LOG_IT</code> is set, and maps of the landcover and of these masks are generated and saved if the input keyword parameter <code>MAP_IT</code> is set in the call.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The landcover and the array of binary masks may be inexistent, incomplete or incorrect.</p></li>
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
 <ul>
+<li><p>Warning 98: The computer has not been recognized by the function <code>get_host_info.pro</code>.</p></li>
 <li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
 <li><p>Error 110: The input positional parameter <code>misr_path</code> is invalid.</p></li>
 <li><p>Error 120: The input positional parameters <code>misr_block</code> is invalid.</p></li>
-<li><p>Error 130: The input positional parameters <code>resol</code> is invalid.</p></li>
-<li><p>Error 199: Unrecognized computer: Update the function <code>set_root_dirs</code>.</p></li>
+<li><p>Error 130: The input positional parameters <code>misr_resol</code> is invalid.</p></li>
+<li><p>Error 199: An exception condition occurred in <code>set_roots_vers.pro</code>.</p></li>
 <li><p>Error 200: An exception condition occurred in <code>path2str.pro</code>.</p></li>
 <li><p>Error 210: An exception condition occurred in <code>block2str.pro</code>.</p></li>
-<li><p>Error 300: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
+<li><p>Error 220: An exception condition occurred in <code>find_agp_file.pro</code>.</p></li>
+<li><p>Error 299: The function <code>set_roots_vers.pro</code> could not assign values to the array <code>root_dirs</code> and one or more directory addresses <code>agp_folder</code>, <code>log_folder</code> and <code>map_folder</code> have not been specified through input keyword parameters.</p></li>
+<li><p>Error 400: An exception condition occurred in <code>lr2hr.pro</code>.</p></li>
+<li><p>Error 410: An exception condition occurred in <code>make_bytemap.pro</code> while generating the overall map (all classes).</p></li>
+<li><p>Error 420: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow ocean map.</p></li>
+<li><p>Error 430: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Landcover map.</p></li>
+<li><p>Error 440: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Coastline map.</p></li>
+<li><p>Error 450: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow inland water map.</p></li>
+<li><p>Error 460: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Ephemeral water map.</p></li>
+<li><p>Error 470: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep inland water map.</p></li>
+<li><p>Error 480: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep ocean map.</p></li>
+<li><p>Error 500: The directory address of <code>log_folder</code> is unwritable.</p></li>
+<li><p>Error 510: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
+<li><p>Error 520: The directory address of <code>map_fpath</code> is unwritable.</p></li>
+<li><p>Error 530: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
+<li><p>Error 600: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_SETREGION_BY_PATH_BLOCKRANGE</code>.</p></li>
-<li><p>Error 310: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
+<li><p>Error 610: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_READDATA</code>.</p></li>
-<li><p>Error 320: An exception condition occurred in <code>lr2hr.pro</code>.</p></li>
-<li><p>Error 400: An exception condition occurred in <code>get_agp_file.pro</code>.</p></li>
-<li><p>Error 500: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
@@ -130,193 +157,119 @@ agp_fspec =
 <li><p><code>block2str.pro</code></p></li>
 <li><p><code>chk_misr_block.pro</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
+<li><p><code>chk_misr_resol.pro</code></p></li>
 <li><p><code>get_agp_file.pro</code></p></li>
 <li><p><code>is_writable.pro</code></p></li>
 <li><p><code>lr2hr.pro</code></p></li>
+<li><p><code>make_bytemap.pro</code></p></li>
 <li><p><code>path2str.pro</code></p></li>
-<li><p><code>set_root_dirs.pro</code></p></li>
+<li><p><code>set_roots_vers.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
 <li><p><code>today.pro</code></p></li>
 </ul></li>
 <li><p><strong>Remarks:</strong></p>
 <ul>
 <li><p><strong>Note 1:</strong> Land cover information is provided by the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file everywhere: there is no concept of fill values in this context.</p></li>
-<li><p><strong>Note 2:</strong> Setting the <code>resol</code> input positional parameter to 275 generates a set of &#8216;high-resolution&#8217; land cover masks by duplicating the low-resolution information contained in the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file: it does not provide more detailed information than what is available in that source file.</p></li>
+<li><p><strong>Note 2:</strong> Setting the <code>misr_resol</code> input positional parameter to 275 generates a set of &#8216;high-resolution&#8217; land cover masks by duplicating the low-resolution information contained in the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file: it does not provide more detailed information than what is available in that source file.</p></li>
 </ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
 IDL&gt; misr_block = 111
-IDL&gt; resol = 1100
-IDL&gt; rc = make_agp_masks(misr_path, misr_block, $
-   resol, masks, /VERBOSE, /MAPIT, $
+IDL&gt; misr_resol = 1100
+IDL&gt; rc = mk_agp_lc_masks(misr_path, misr_block, $
+   misr_resol, landcover, agp_masks, $
+   AGP_FOLDER = &#39;&#39;, AGP_VERSION = &#39;&#39;, $
+   /LOG_IT, LOG_FOLDER = &#39;&#39;, $
+   /MAP_IT, MAP_FOLDER = &#39;&#39;, $
    /DEBUG, EXCPT_COND = excpt_cond)
-IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39; and excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
-rc = 0 and excpt_cond = &gt;&lt;</code></pre></li>
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
 <li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
 </ul></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
-<li><p>2018&#8211;05&#8211;13: Version 0.9 &#8212; Initial release.</p></li>
+<li><p>2018&#8211;05&#8211;13: Version 0.9 &#8212; Initial release, under the name <code>make_agp_lc_masks.pro</code>.</p></li>
 <li><p>2018&#8211;05&#8211;15: Version 1.0 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;05&#8211;18: Version 1.5 &#8212; Implement new coding standards.</p></li>
 <li><p>2018&#8211;08&#8211;02: Version 1.6 &#8212; Update documentation.</p></li>
+<li><p>2018&#8211;12&#8211;17: Version 1.7 &#8212; Update the code to use <code>set_roots_vers.pro</code> and <code>make_bytemap.pro</code>.</p></li>
+<li><p>2019&#8211;01&#8211;07: Version 1.8 &#8212; Rename this function from <code>make_agp_lc_masks.pro</code> to <code>mk_agp_lc_masks.pro</code> and update the documentation.</p></li>
+<li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 </ul></li>
 </ul>
-<h2>make_land_water_masks</h2>
+<h2>mk_water_land_masks</h2>
 <ul>
-<li><p><strong>Purpose:</strong> This function generates the simplified land and water masks needed by the <code>best_fits_l1b2</code> routine to enable the replacement of missing values in <span class="smallcaps">L1B2</span> files by reasonable estimates.</p></li>
-<li><p><strong>Algorithm:</strong> This function relies on the <span class="smallcaps">MISR-HR</span> function <code>make_agp_masks.pro</code>, which returns masks for the 7 standard <span class="smallcaps">AGP</span> surface cover types and combines 3 categories (&#8216;0: shallow ocean&#8217;, &#8216;5: deep inland water&#8217; and &#8216;6: deep ocean&#8217;) into the water mask, and the other 4 categories (&#8216;1: land&#8217;, &#8216;2: coastline&#8217;, &#8216;3: shallow inland water&#8217; and &#8216;4: ephemeral water&#8217;) into the land mask. The default spatial resolution of these masks is 1100 m; set the input positional parameter <code>resol</code> to <code>275</code> if the masks are required at the high spatial resolution version (275 m). In this case, the <span class="smallcaps">MISR-HR</span> function <code>lr2hr.pro</code> is called to upsize the arrays.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = make_land_water_masks(misr_path, misr_block, resol, $</code><br />
-<code>land_mask, water_mask, AGP_VERSION = agp_version, $</code><br />
+<li><p><strong>Purpose:</strong> This function generates two simplified landcover maps for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, one for water bodies and one for land masses.</p></li>
+<li><p><strong>Algorithm:</strong> This function relies on the function <code>mk_agp_lc_masks.pro</code> to provide masks for the 7 standard <span class="smallcaps">AGP</span> surface cover types for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and then combines the 3 categories (&#8216;0: shallow ocean&#8217;, &#8216;5: deep inland water&#8217; and &#8216;6: deep ocean&#8217;) into the water bodies mask, and the other 4 categories (&#8216;1: land&#8217;, &#8216;2: coastline&#8217;, &#8216;3: shallow inland water&#8217; and &#8216;4: ephemeral water&#8217;) into the land masses mask.</p></li>
+<li><p><strong>Syntax:</strong> <code>rc = mk_water_land_masks(misr_path, misr_block, misr_resol, $</code><br />
+<code>water_mask, land_mask, AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
 <code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>misr_path {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
-<li><p><code>misr_block {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
-<li><p><code>resol {INTEGER} [I]:</code> The spatial resolution at which the land and water masks are required.</p></li>
-<li><p><code>land_mask {BYTE array} [O]:</code> The land mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+<li><p><code>misr_path {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
+<li><p><code>misr_block {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
+<li><p><code>misr_resol {INT} [I]:</code> The spatial resolution at which the output land and water masks are required (either 275 or 1100 m).</p></li>
 <li><p><code>water_mask {BYTE array} [O]:</code> The water mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+<li><p><code>land_mask {BYTE array} [O]:</code> The land mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: &#8217;F01_24&#8217;):</code> The AGP version identifier to use.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
-<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
+<li><p><strong>Returned value type:</strong> <code>INT</code>.</p></li>
 <li><p><strong>Outcome:</strong></p>
 <ul>
-<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The output positional parameters <code>land_mask</code> and <code>water_mask</code> contain the desired masks.</p></li>
-<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. Output positional parameters <code>land_mask</code> and <code>water_mask</code> may be undefined, inexistent, incomplete or useless.</p></li>
+<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided in the call. The output positional parameters <code>water_mask</code> and <code>land_mask</code> contain the desired masks.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The output positional parameters <code>water_mask</code> and <code>land_mask</code> may be inexistent, incomplete or incorrect.</p></li>
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
 <ul>
 <li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
 <li><p>Error 110: Input positional parameter <code>misr_path</code> is invalid.</p></li>
 <li><p>Error 120: Input positional parameter <code>misr_block</code> is invalid.</p></li>
-<li><p>Error 130: Input positional parameter <code>resol</code> is invalid.</p></li>
-<li><p>Error 200: An exception condition occurred in <code>make_agp_masks.pro</code>.</p></li>
+<li><p>Error 130: Input positional parameter <code>misr_resol</code> is invalid.</p></li>
+<li><p>Error 200: An exception condition occurred in <code>mk_agp_lc_masks.pro</code>.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
 <li><p><code>chk_misr_block.pro</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
-<li><p><code>make_agp_masks.pro</code></p></li>
+<li><p><code>chk_misr_resol.pro</code></p></li>
+<li><p><code>mk_agp_lc_masks.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
 </ul></li>
 <li><p><strong>Remarks:</strong></p>
 <ul>
-<li><p><strong>Note 1:</strong> The land and the water masks generated by this function are based on static information on the spatial distribution of surface geophysical types: they are valid for all cameras and throughout the <span class="smallcaps">MISR</span> mission.</p></li>
+<li><p><strong>Note 1:</strong> The water and land masks generated by this function are based on static information on the spatial distribution of surface geophysical types: they are valid for all cameras and throughout the <span class="smallcaps">MISR</span> mission.</p></li>
 <li><p><strong>Note 2:</strong> Although the underlying <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> data distinguishes between various types of geophysical media, this is not meant to be an accurate land cover map, let alone a source of information on land cover change.</p></li>
+<li><p><strong>Note 3:</strong> The landcover information contained in the AGP files is provided at the spatial resolution of 1100 m. If the input positional parameter <code>misr_resol</code> is set to <code>275</code>, then the original values are simply duplicated with the <span class="smallcaps">MISR-HR</span> function <code>lr2hr.pro</code> to artificially generate the higher resolution map: no aditional or more detailed information is provided.</p></li>
 </ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
 IDL&gt; misr_block = 110
-IDL&gt; resol = 275
-IDL&gt; rc = make_land_water_masks(misr_path, misr_block, resol, land_mask, $
-   water_mask, AGP_VERSION = agp_version, /DEBUG, EXCPT_COND = excpt_cond)
-IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, and excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
-rc = 0, and excpt_cond = &gt;&lt;</code></pre></li>
+IDL&gt; misr_resol = 275
+IDL&gt; rc = mk_water_land_masks(misr_path, misr_block, $
+   misr_resol, water_mask, land_mask, $
+   AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   DEBUG = debug, EXCPT_COND = excpt_cond)
+IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + excpt_cond + &#39;&lt;&#39;
+rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
 <li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
 </ul></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
-<li><p>2018&#8211;08&#8211;03: Version 0.9 &#8212; Initial release.</p></li>
+<li><p>2018&#8211;08&#8211;03: Version 0.9 &#8212; Initial release under the name <code>make_water_land_masks.pro</code>.</p></li>
 <li><p>2018&#8211;08&#8211;08: Version 1.0 &#8212; Initial public release.</p></li>
-</ul></li>
-</ul>
-<h2>map_agp_lc_blocks</h2>
-<ul>
-<li><p><strong>Purpose:</strong> This function generates and saves a map of the land cover type assumed by the <span class="smallcaps">MISR</span> ground segment for the specified <span class="smallcaps">Path</span> and for the range of <span class="smallcaps">Blocks</span> from <code>misr_block1</code> to <code>misr_block2</code> (inclusive).</p></li>
-<li><p><strong>Algorithm:</strong> This function reads the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file for the specified <span class="smallcaps">Path</span>, extracts and maps the land cover information contained in the field <code>SurfaceFeatureID</code> for the range of Blocks from <code>misr_block1</code> to <code>misr_block2</code> inclusive.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = map_agp_lc_blocks(misr_path, misr_block1, misr_block2, $</code><br />
-<code>AGP_VERSION = agp_version, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
-<li><p><strong>Positional parameters [Input/Output]:</strong></p>
-<ul>
-<li><p><code>misr_path {INTEGER} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
-<li><p><code>misr_block1 {INTEGER} [I]:</code> The selected starting <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number to be mapped.</p></li>
-<li><p><code>misr_block2 {INTEGER} [I]:</code> The selected ending <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number to be mapped.</p></li>
-</ul></li>
-<li><p><strong>Keyword parameters [Input/Output]:</strong></p>
-<ul>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I]</code> The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> version to use.</p></li>
-<li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
-<li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
-</ul></li>
-<li><p><strong>Returned value type:</strong> <code>INTEGER</code>.</p></li>
-<li><p><strong>Outcome:</strong></p>
-<ul>
-<li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. A log file and the land cover map used during the processing of MISR data (largely a land/sea mask) for the selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and for the indicated range of <span class="smallcaps">Blocks</span> is saved in the expected location <code>root_dirs[3] + &#8217;Pxxx_Bzzz/AGP/&#8217;</code> folder. The color coding of the land cover map is as follows:</p>
-<ul>
-<li><p>Navy: Deep ocean</p></li>
-<li><p>Blue: Shallow ocean</p></li>
-<li><p>Sand: Coastline</p></li>
-<li><p>Cyan: Shallow inland water</p></li>
-<li><p>Green: Land</p></li>
-<li><p>Purple: Ephemeral water</p></li>
-<li><p>Turquoise: Deep inland water</p></li>
-</ul></li>
-<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The log file and the land cover map may not have been produced or may be incomplete or useless.</p></li>
-</ul></li>
-<li><p><strong>Exception conditions:</strong></p>
-<ul>
-<li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
-<li><p>Error 110: The input positional parameter <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> is invalid.</p></li>
-<li><p>Error 120: The input positional parameters <span class="smallcaps">MISR</span> <span class="smallcaps">Block1</span> is invalid.</p></li>
-<li><p>Error 130: The input positional parameters <span class="smallcaps">MISR</span> <span class="smallcaps">Block2</span> is invalid.</p></li>
-<li><p>Error 199: Unrecognized computer: Update the function <code>set_root_dirs</code>.</p></li>
-<li><p>Error 200: An exception condition occurred in <code>path2str.pro</code>.</p></li>
-<li><p>Error 210: An exception condition occurred in <code>block2str.pro</code>.</p></li>
-<li><p>Error 220: An exception condition occurred in <code>block2str.pro</code>.</p></li>
-<li><p>Error 300: An exception condition occurred in <code>get_agp_file.pro</code>.</p></li>
-<li><p>Error 310: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
-<code>MTK_SETREGION_BY_PATH_BLOCKRANGE</code>.</p></li>
-<li><p>Error 320: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
-<code>MTK_READDATA</code>.</p></li>
-<li><p>Error 500: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
-</ul></li>
-<li><p><strong>Dependencies:</strong></p>
-<ul>
-<li><p><code>MISR Toolkit</code></p></li>
-<li><p><code>block2str.pro</code></p></li>
-<li><p><code>chk_misr_block.pro</code></p></li>
-<li><p><code>chk_misr_path.pro</code></p></li>
-<li><p><code>get_agp_file.pro</code></p></li>
-<li><p><code>is_dir.pro</code></p></li>
-<li><p><code>is_writable.pro</code></p></li>
-<li><p><code>path2str.pro</code></p></li>
-<li><p><code>set_root_dirs.pro</code></p></li>
-<li><p><code>strstr.pro</code></p></li>
-<li><p><code>today.pro</code></p></li>
-</ul></li>
-<li><p><strong>Remarks:</strong></p>
-<ul>
-<li><p><strong>Note 1:</strong> This function currently does not check the validity of the optional input keyword parameter <code>agp_version</code>.</p></li>
-<li><p><strong>Note 2:</strong> If this function is called with a range of <span class="smallcaps">Blocks</span> spanning at least one <span class="smallcaps">Block</span>, the log file and the map are saved in the folder <code>root_dirs[3] + [MISR Path]_[MISR Block1]/</code>.</p></li>
-<li><p><strong>Note 3:</strong> This land cover map is primarily used as a land/ocean mask in two instances within the <span class="smallcaps">MISR</span> ground segment: (1) after generating the Ellipsoid-projected <span class="smallcaps">L1B2</span> data everywhere, that mask is used to generate the Terrain-projected data files only for those <span class="smallcaps">Blocks</span> that contain land masses, and (2) within the <span class="smallcaps">L2</span> characterization of atmospheric properties, the same land/ocean mask is also used to choose between the ocean-specific or the land-specific aerosol algorithm. This map is not intended to be used for other purposes; factual errors will be corrected when generating a new version, but there is no intention to make it more discriminating, as such information is not used by the <span class="smallcaps">MISR</span> ground segment.</p></li>
-</ul></li>
-<li><p><strong>Examples:</strong></p>
-<pre><code>IDL&gt; rc = map_agp_lc_blocks(168, 108, 114, AGP_VERSION = &#39;F01_24&#39;, $
-   /DEBUG, EXCPT_COND = excpt_cond)
-The map of AGP land cover has been saved in
-[misr_roots[3]]/P168_B108/AGP/
-   map-AGP_P168_B108_B114_LC_F01_24_2018-02-21.png</code></pre></li>
-<li><p><strong>References:</strong></p>
-<ul>
-<li><p>Scott A. Lewicki and Jia Zong (1999) &#8217;Level 1 Ancillary Geographic Product Algorithm Theoretical Basis&#8217;, JPL D-13400, Revision A, available from <a href="https://eospso.gsfc.nasa.gov/sites/default/files/atbd/atbd-misr-05.pdf" class="uri">https://eospso.gsfc.nasa.gov/sites/default/files/atbd/atbd-misr-05.pdf</a>.</p></li>
-<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise and Mike Smyth (2011) &#8217;Data Products Specifications&#8217;, JPL D-13963, Revision S, available from <a href="https://eosweb.larc.nasa.gov/project/misr/DPS_v50_RevS.pdf" class="uri">https://eosweb.larc.nasa.gov/project/misr/DPS_v50_RevS.pdf</a>.</p></li>
-</ul></li>
-<li><p><strong>Versioning:</strong></p>
-<ul>
-<li><p>2017&#8211;12&#8211;10: Version 0.9 &#8212; Initial release.</p></li>
-<li><p>2018&#8211;03&#8211;10: Version 1.0 &#8212; Initial public release.</p></li>
-<li><p>2018&#8211;04&#8211;08: Version 1.1 &#8212; Update this function to use <code>set_root_dirs.pro</code> instead of <code>set_misr_roots.pro</code>, and update the documentation.</p></li>
-<li><p>2018&#8211;05&#8211;12: Version 1.2 &#8212; Modify the names and standard locations of the output files.</p></li>
-<li><p>2018&#8211;05&#8211;18: Version 1.5 &#8212; Implement new coding standards.</p></li>
+<li><p>2018&#8211;12&#8211;17: Version 1.2 &#8212; Update the code to rename the input positional parameter <code>resol</code> to <code>misr_resol</code>, include additional keyword parameters, use the new function <code>make_agp_lc_masks.pro</code> instead of <code>make_agp_masks.pro</code>, and update the documentation.</p></li>
+<li><p>2019&#8211;01&#8211;08: Version 1.3 &#8212; Rename the function from <code>make_water_land_masks.pro</code> to <code>mk_water_land_masks.pro</code>, and update the documentation.</p></li>
+<li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 </ul></li>
 </ul>
 </body>
