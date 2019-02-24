@@ -51,10 +51,11 @@ FUNCTION mk_agp_lc_masks, $
    ;  (1100 m) of the MISR AGP file, and upscaled to the higher spatial
    ;  resolution (275 m) if requested, using the function lr2hr.pro.
    ;
-   ;  SYNTAX:
-   ;  rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, landcover, agp_masks, $
+   ;  SYNTAX: rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $
+   ;  landcover, agp_masks, $
    ;  AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
-   ;  LOG_IT = log_it, LOG_FOLDER = log_folder, MAP_IT = map_it, MAP_FOLDER = map_folder$
+   ;  LOG_IT = log_it, LOG_FOLDER = log_folder, $
+   ;  MAP_IT = map_it, MAP_FOLDER = map_folder$
    ;  DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
    ;  POSITIONAL PARAMETERS [INPUT/OUTPUT]:
@@ -74,28 +75,32 @@ FUNCTION mk_agp_lc_masks, $
    ;
    ;  KEYWORD PARAMETERS [INPUT/OUTPUT]:
    ;
-   ;  *   AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The directory address of the folder containing the MISR AGP
-   ;      files, if they are not located in the default location.
+   ;  *   AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The directory address of the folder
+   ;      containing the MISR AGP files, if they are not located in the
+   ;      default location.
    ;
-   ;  *   AGP_VERSION = agp_version {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The AGP version identifier to use instead of the default value.
+   ;  *   AGP_VERSION = agp_version {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The AGP version identifier to use instead
+   ;      of the default value.
    ;
-   ;  *   LOG_IT = log_it {INT} [I] (Default value: 0): Flag to
-   ;      activate (1) or skip (0) the generation and saving of a log
-   ;      file.
+   ;  *   LOG_IT = log_it {INT} [I] (Default value: 0): Flag to activate
+   ;      (1) or skip (0) generating a log file.
    ;
-   ;  *   LOG_FOLDER = log_folder {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The directory address of the folder containing the log file, if
-   ;      it should not be saved in the default location.
+   ;  *   LOG_FOLDER = log_folder {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The directory address of the output folder
+   ;      containing the processing log.
    ;
-   ;  *   MAP_IT = map_it {INT} [I] (Default value: 0): Flag to
-   ;      activate (1) or skip (0) the generation and saving of maps of
-   ;      the land cover masks.
+   ;  *   MAP_IT = map_it {INT} [I] (Default value: 0): Flag to activate
+   ;      (1) or skip (0) generating maps of the numerical results.
    ;
-   ;  *   MAP_FOLDER = map_folder {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The directory address of the folder containing the map files, if
-   ;      they should not be saved in the default location.
+   ;  *   MAP_FOLDER = map_folder {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The directory address of the output folder
+   ;      containing the maps.
    ;
    ;  *   DEBUG = debug {INT} [I] (Default value: 0): Flag to activate (1)
    ;      or skip (0) debugging tests.
@@ -283,7 +288,8 @@ FUNCTION mk_agp_lc_masks, $
    ;  *   2018–08–02: Version 1.6 — Update documentation.
    ;
    ;  *   2018–12–17: Version 1.7 — Update the code to use
-   ;      set_roots_vers.pro and make_bytemap.pro.
+   ;      set_roots_vers.pro and
+   ;      make_bytemap.pro.
    ;
    ;  *   2019–01–07: Version 1.8 — Rename this function from
    ;      make_agp_lc_masks.pro to mk_agp_lc_masks.pro and update the
@@ -291,6 +297,8 @@ FUNCTION mk_agp_lc_masks, $
    ;
    ;  *   2019–01–28: Version 2.00 — Systematic update of all routines to
    ;      implement stricter coding standards and improve documentation.
+   ;
+   ;  *   2019–02–24: Version 2.01 — Documentation update.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;

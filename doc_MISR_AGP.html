@@ -21,8 +21,10 @@
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -75,6 +77,7 @@ agp_fspec =
 <li><p>2018&#8211;05&#8211;16: Version 1.5 &#8212; Implement new coding standards.</p></li>
 <li><p>2018&#8211;12&#8211;15: Version 1.6 &#8212; Add the optional input keyword parameter <code>AGP_FOLDER</code>.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
+<li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 </ul></li>
 </ul>
 <h2>mk_agp_lc_masks</h2>
@@ -92,9 +95,11 @@ Within each individual land cover class mask, each pixel is assigned the value <
 <li><p><code>landcover code 6:</code> Deep ocean, navy.</p></li>
 </ul>
 <p>The masks are generated at the original low spatial resolution (1100 m) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file, and upscaled to the higher spatial resolution (275 m) if requested, using the function <code>lr2hr.pro</code>.</p></li>
-<li><p><strong>Syntax:</strong> <code>rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, landcover, agp_masks, $</code><br />
+<li><p><strong>Syntax:</strong> <code>rc = mk_agp_lc_masks(misr_path, misr_block, misr_resol, $</code><br />
+<code>landcover, agp_masks, $</code><br />
 <code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
-<code>LOG_IT = log_it, LOG_FOLDER = log_folder, MAP_IT = map_it, MAP_FOLDER = map_folder$</code><br />
+<code>LOG_IT = log_it, LOG_FOLDER = log_folder, $</code><br />
+<code>MAP_IT = map_it, MAP_FOLDER = map_folder$</code><br />
 <code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
@@ -106,12 +111,16 @@ Within each individual land cover class mask, each pixel is assigned the value <
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
-<li><p><code>LOG_IT = log_it {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of a log file.</p></li>
-<li><p><code>LOG_FOLDER = log_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the log file, if it should not be saved in the default location.</p></li>
-<li><p><code>MAP_IT = map_it {INT} [I] (Default value: 0):</code> Flag to activate (1) or skip (0) the generation and saving of maps of the land cover masks.</p></li>
-<li><p><code>MAP_FOLDER = map_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the map files, if they should not be saved in the default location.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>LOG_IT = log_it {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) generating a log file.</p></li>
+<li><p><code>LOG_FOLDER = log_folder {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The directory address of the output folder containing the processing log.</p></li>
+<li><p><code>MAP_IT = map_it {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) generating maps of the numerical results.</p></li>
+<li><p><code>MAP_FOLDER = map_folder {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The directory address of the output folder containing the maps.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -123,7 +132,8 @@ Within each individual land cover class mask, each pixel is assigned the value <
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
 <ul>
-<li><p>Warning 98: The computer has not been recognized by the function <code>get_host_info.pro</code>.</p></li>
+<li><p>Warning 98: The computer has not been recognized by the function<br />
+<code>get_host_info.pro</code>.</p></li>
 <li><p>Error 100: One or more positional parameter(s) are missing.</p></li>
 <li><p>Error 110: The input positional parameter <code>misr_path</code> is invalid.</p></li>
 <li><p>Error 120: The input positional parameters <code>misr_block</code> is invalid.</p></li>
@@ -208,30 +218,35 @@ Processing nominal.</code></pre></li>
 <li><p>2018&#8211;05&#8211;15: Version 1.0 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;05&#8211;18: Version 1.5 &#8212; Implement new coding standards.</p></li>
 <li><p>2018&#8211;08&#8211;02: Version 1.6 &#8212; Update documentation.</p></li>
-<li><p>2018&#8211;12&#8211;17: Version 1.7 &#8212; Update the code to use <code>set_roots_vers.pro</code> and <code>make_bytemap.pro</code>.</p></li>
+<li><p>2018&#8211;12&#8211;17: Version 1.7 &#8212; Update the code to use <code>set_roots_vers.pro</code> and<br />
+<code>make_bytemap.pro</code>.</p></li>
 <li><p>2019&#8211;01&#8211;07: Version 1.8 &#8212; Rename this function from <code>make_agp_lc_masks.pro</code> to <code>mk_agp_lc_masks.pro</code> and update the documentation.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
+<li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 </ul></li>
 </ul>
 <h2>mk_water_land_masks</h2>
 <ul>
 <li><p><strong>Purpose:</strong> This function generates two simplified landcover maps for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, one for water bodies and one for land masses.</p></li>
-<li><p><strong>Algorithm:</strong> This function relies on the function <code>mk_agp_lc_masks.pro</code> to provide masks for the 7 standard <span class="smallcaps">AGP</span> surface cover types for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and then combines the 3 categories (&#8216;0: shallow ocean&#8217;, &#8216;5: deep inland water&#8217; and &#8216;6: deep ocean&#8217;) into the water bodies mask, and the other 4 categories (&#8216;1: land&#8217;, &#8216;2: coastline&#8217;, &#8216;3: shallow inland water&#8217; and &#8216;4: ephemeral water&#8217;) into the land masses mask.</p></li>
+<li><p><strong>Algorithm:</strong> This function relies on the function <code>mk_agp_lc_masks.pro</code> to provide masks for the 7 standard <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> surface cover types for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and then combines the 3 categories (&#8216;0: shallow ocean&#8217;, &#8216;5: deep inland water&#8217; and &#8216;6: deep ocean&#8217;) into the water bodies mask, and the other 4 categories (&#8216;1: land&#8217;, &#8216;2: coastline&#8217;, &#8216;3: shallow inland water&#8217; and &#8216;4: ephemeral water&#8217;) into the land masses mask.</p></li>
 <li><p><strong>Syntax:</strong> <code>rc = mk_water_land_masks(misr_path, misr_block, misr_resol, $</code><br />
-<code>water_mask, land_mask, AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
+<code>water_mask, land_mask, $</code><br />
+<code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
 <code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
 <li><p><code>misr_path {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
 <li><p><code>misr_block {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Block</span> number.</p></li>
 <li><p><code>misr_resol {INT} [I]:</code> The spatial resolution at which the output land and water masks are required (either 275 or 1100 m).</p></li>
-<li><p><code>water_mask {BYTE array} [O]:</code> The water mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
-<li><p><code>land_mask {BYTE array} [O]:</code> The land mask for the specified <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+<li><p><code>water_mask {BYTE array} [O]:</code> The water mask for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
+<li><p><code>land_mask {BYTE array} [O]:</code> The land mask for the specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> and <span class="smallcaps">Block</span>, at the requested spatial resolution.</p></li>
 </ul></li>
 <li><p><strong>Keyword parameters [Input/Output]:</strong></p>
 <ul>
-<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
-<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value: Set by &#8217;set_roots_vers.pro&#8217;):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>AGP_FOLDER = agp_folder {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
+<li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value:</code> Set by function<br />
+<code>set_roots_vers.pro):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -279,11 +294,13 @@ rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
 </ul></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
-<li><p>2018&#8211;08&#8211;03: Version 0.9 &#8212; Initial release under the name <code>make_water_land_masks.pro</code>.</p></li>
+<li><p>2018&#8211;08&#8211;03: Version 0.9 &#8212; Initial release under the name<br />
+<code>make_water_land_masks.pro</code>.</p></li>
 <li><p>2018&#8211;08&#8211;08: Version 1.0 &#8212; Initial public release.</p></li>
 <li><p>2018&#8211;12&#8211;17: Version 1.2 &#8212; Update the code to rename the input positional parameter <code>resol</code> to <code>misr_resol</code>, include additional keyword parameters, use the new function <code>make_agp_lc_masks.pro</code> instead of <code>make_agp_masks.pro</code>, and update the documentation.</p></li>
 <li><p>2019&#8211;01&#8211;08: Version 1.3 &#8212; Rename the function from <code>make_water_land_masks.pro</code> to <code>mk_water_land_masks.pro</code>, and update the documentation.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
+<li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 </ul></li>
 </ul>
 </body>

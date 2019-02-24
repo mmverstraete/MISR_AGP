@@ -15,16 +15,17 @@ FUNCTION mk_water_land_masks, $
    ;  land masses.
    ;
    ;  ALGORITHM: This function relies on the function mk_agp_lc_masks.pro
-   ;  to provide masks for the 7 standard AGP surface cover types for the
-   ;  specified MISR PATH and then combines the 3 categories (‘0: shallow
-   ;  ocean’, ‘5: deep inland water’ and ‘6: deep ocean’) into the water
-   ;  bodies mask, and the other 4 categories (‘1: land’, ‘2: coastline’,
-   ;  ‘3: shallow inland water’ and ‘4: ephemeral water’) into the land
-   ;  masses mask.
+   ;  to provide masks for the 7 standard MISR AGP surface cover types for
+   ;  the specified MISR PATH and then combines the 3 categories (‘0:
+   ;  shallow ocean’, ‘5: deep inland water’ and ‘6: deep ocean’) into the
+   ;  water bodies mask, and the other 4 categories (‘1: land’, ‘2:
+   ;  coastline’, ‘3: shallow inland water’ and ‘4: ephemeral water’) into
+   ;  the land masses mask.
    ;
    ;  SYNTAX:
    ;  rc = mk_water_land_masks(misr_path, misr_block, misr_resol, $
-   ;  water_mask, land_mask, AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+   ;  water_mask, land_mask, $
+   ;  AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
    ;  DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
    ;  POSITIONAL PARAMETERS [INPUT/OUTPUT]:
@@ -37,19 +38,23 @@ FUNCTION mk_water_land_masks, $
    ;      land and water masks are required (either 275 or 1100 m).
    ;
    ;  *   water_mask {BYTE array} [O]: The water mask for the specified
-   ;      PATH and BLOCK, at the requested spatial resolution.
+   ;      MISR PATH and BLOCK, at the requested spatial resolution.
    ;
-   ;  *   land_mask {BYTE array} [O]: The land mask for the specified PATH
-   ;      and BLOCK, at the requested spatial resolution.
+   ;  *   land_mask {BYTE array} [O]: The land mask for the specified MISR
+   ;      PATH and BLOCK, at the requested spatial resolution.
    ;
    ;  KEYWORD PARAMETERS [INPUT/OUTPUT]:
    ;
-   ;  *   AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The directory address of the folder containing the MISR AGP
-   ;      files, if they are not located in the default location.
+   ;  *   AGP_FOLDER = agp_folder {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The directory address of the folder
+   ;      containing the MISR AGP files, if they are not located in the
+   ;      default location.
    ;
-   ;  *   AGP_VERSION = agp_version {STRING} [I] (Default value: Set by ’set_roots_vers.pro’):
-   ;      The AGP version identifier to use instead of the default value.
+   ;  *   AGP_VERSION = agp_version {STRING} [I] (Default value: Set by
+   ;      function
+   ;      set_roots_vers.pro): The AGP version identifier to use instead
+   ;      of the default value.
    ;
    ;  *   DEBUG = debug {INT} [I] (Default value: 0): Flag to activate (1)
    ;      or skip (0) debugging tests.
@@ -158,6 +163,8 @@ FUNCTION mk_water_land_masks, $
    ;
    ;  *   2019–01–28: Version 2.00 — Systematic update of all routines to
    ;      implement stricter coding standards and improve documentation.
+   ;
+   ;  *   2019–02–24: Version 2.01 — Documentation update.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
