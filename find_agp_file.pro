@@ -96,6 +96,10 @@ FUNCTION find_agp_file, $
    ;
    ;  *   Error 340: The MISR AGP file does not exist.
    ;
+   ;  *   Error 600: An exception condition occurred in the MISR TOOLKIT
+   ;      routine
+   ;      MTK_MAKE_FILENAME.
+   ;
    ;  DEPENDENCIES:
    ;
    ;  *   MISR Toolkit
@@ -145,6 +149,9 @@ FUNCTION find_agp_file, $
    ;      implement stricter coding standards and improve documentation.
    ;
    ;  *   2019–02–24: Version 2.01 — Documentation update.
+   ;
+   ;  *   2019–05–04: Version 2.02 — Update the code to report the
+   ;      specific error message of MTK routines.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -274,6 +281,13 @@ FUNCTION find_agp_file, $
    ;  Generate the specification of the AGP file:
    status = MTK_MAKE_FILENAME(agp_fpath, 'AGP', '', misr_path_s, '', $
       agp_version, agp_fspec)
+   IF (debug AND (status NE 0)) THEN BEGIN
+      error_code = 600
+      excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
+         ': Error message from MTK_MAKE_FILENAME: ' + $
+         MTK_ERROR_MESSAGE(status)
+      RETURN, error_code
+   ENDIF
 
    ;  Verify that this file specification points to a single file and does
    ;  not contain wildcard characters such as * or ?):

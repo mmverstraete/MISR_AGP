@@ -143,7 +143,8 @@ FUNCTION mk_water_land_masks, $
    ;  *   Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies,
    ;      Catherine Moroney, Kevin Mueller, Susan Paradise, Mike
    ;      Smyth (2011) _MISR Data Products Specifications_, JPL D-13963,
-   ;      Revision S, Section 9.4, p. 210.
+   ;      REVISION S, Section 9.4, p. 210, Jet Propulsion Laboratory,
+   ;      California Institute of Technology, Pasadena, CA, USA.
    ;
    ;  VERSIONING:
    ;

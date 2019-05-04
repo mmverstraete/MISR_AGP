@@ -46,6 +46,8 @@
 <li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file exists but is unreadable.</p></li>
 <li><p>Error 330: An exception condition occurred in function <code>is_readable.pro</code>.</p></li>
 <li><p>Error 340: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file does not exist.</p></li>
+<li><p>Error 600: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
+<code>MTK_MAKE_FILENAME</code>.</p></li>
 </ul></li>
 <li><p><strong>Dependencies:</strong></p>
 <ul>
@@ -78,6 +80,7 @@ agp_fspec =
 <li><p>2018&#8211;12&#8211;15: Version 1.6 &#8212; Add the optional input keyword parameter <code>AGP_FOLDER</code>.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
+<li><p>2019&#8211;05&#8211;04: Version 2.02 &#8212; Update the code to report the specific error message of MTK routines.</p></li>
 </ul></li>
 </ul>
 <h2>mk_agp_lc_masks</h2>
@@ -210,7 +213,7 @@ IDL&gt; IF (rc EQ 0) THEN PRINT, &#39;Processing nominal.&#39; $
 Processing nominal.</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
-<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
+<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, <strong>Revision S</strong>, Section 9.4, p. 210, Jet Propulsion Laboratory, California Institute of Technology, Pasadena, CA, USA.</p></li>
 </ul></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
@@ -223,6 +226,7 @@ Processing nominal.</code></pre></li>
 <li><p>2019&#8211;01&#8211;07: Version 1.8 &#8212; Rename this function from <code>make_agp_lc_masks.pro</code> to <code>mk_agp_lc_masks.pro</code> and update the documentation.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
+<li><p>2019&#8211;05&#8211;04: Version 2.02 &#8212; Update the code to report the specific error message of MTK routines.</p></li>
 </ul></li>
 </ul>
 <h2>mk_water_land_masks</h2>
@@ -290,7 +294,7 @@ IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, excpt_cond = &gt;&#39; + ex
 rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
 <li><p><strong>References:</strong></p>
 <ul>
-<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, Revision S, Section 9.4, p. 210.</p></li>
+<li><p>Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies, Catherine Moroney, Kevin Mueller, Susan Paradise, Mike Smyth (2011) <em>MISR Data Products Specifications</em>, <strong>JPL D-13963</strong>, <strong>Revision S</strong>, Section 9.4, p. 210, Jet Propulsion Laboratory, California Institute of Technology, Pasadena, CA, USA.</p></li>
 </ul></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>

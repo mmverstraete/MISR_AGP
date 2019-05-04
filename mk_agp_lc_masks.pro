@@ -274,7 +274,8 @@ FUNCTION mk_agp_lc_masks, $
    ;  *   Mike Bull, Jason Matthews, Duncan McDonald, Alexander Menzies,
    ;      Catherine Moroney, Kevin Mueller, Susan Paradise, Mike
    ;      Smyth (2011) _MISR Data Products Specifications_, JPL D-13963,
-   ;      Revision S, Section 9.4, p. 210.
+   ;      REVISION S, Section 9.4, p. 210, Jet Propulsion Laboratory,
+   ;      California Institute of Technology, Pasadena, CA, USA.
    ;
    ;  VERSIONING:
    ;
@@ -299,6 +300,9 @@ FUNCTION mk_agp_lc_masks, $
    ;      implement stricter coding standards and improve documentation.
    ;
    ;  *   2019–02–24: Version 2.01 — Documentation update.
+   ;
+   ;  *   2019–05–04: Version 2.02 — Update the code to report the
+   ;      specific error message of MTK routines.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -591,7 +595,8 @@ FUNCTION mk_agp_lc_masks, $
    IF (debug AND (status NE 0)) THEN BEGIN
       error_code = 600
       excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
-         ': status from MTK_SETREGION_BY_PATH_BLOCKRANGE = ' + strstr(status)
+         ': Error message from MTK_SETREGION_BY_PATH_BLOCKRANGE: ' + $
+         MTK_ERROR_MESSAGE(status)
       RETURN, error_code
    ENDIF
 
@@ -602,7 +607,8 @@ FUNCTION mk_agp_lc_masks, $
    IF (debug AND (status NE 0)) THEN BEGIN
       error_code = 610
       excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
-         ': status from MTK_READDATA = ' + strstr(status)
+         ': Error message from MTK_READDATA: ' + $
+         MTK_ERROR_MESSAGE(status)
       RETURN, error_code
    ENDIF
 
