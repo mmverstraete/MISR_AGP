@@ -43,9 +43,7 @@
 <li><p>Error 210: This computer is unrecognized and no alternate directory address to the <span class="smallcaps">AGP</span> folder is provided.</p></li>
 <li><p>Error 300: No <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
 <li><p>Error 310: More than 1 <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
-<li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file exists but is unreadable.</p></li>
-<li><p>Error 330: An exception condition occurred in function <code>is_readable.pro</code>.</p></li>
-<li><p>Error 340: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file does not exist.</p></li>
+<li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file is not found, not a regular file or not readable.</p></li>
 <li><p>Error 600: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_MAKE_FILENAME</code>.</p></li>
 </ul></li>
@@ -53,7 +51,6 @@
 <ul>
 <li><p><code>MISR Toolkit</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
-<li><p><code>is_readable.pro</code></p></li>
 <li><p><code>path2str.pro</code></p></li>
 <li><p><code>set_roots_vers.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
@@ -81,6 +78,7 @@ agp_fspec =
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 <li><p>2019&#8211;05&#8211;04: Version 2.02 &#8212; Update the code to report the specific error message of MTK routines.</p></li>
+<li><p>2019&#8211;05&#8211;17: Version 2.03 &#8212; Code simplification (<code>FILE_TEST</code>).</p></li>
 </ul></li>
 </ul>
 <h2>mk_agp_lc_masks</h2>

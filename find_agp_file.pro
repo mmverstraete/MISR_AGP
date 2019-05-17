@@ -89,12 +89,8 @@ FUNCTION find_agp_file, $
    ;
    ;  *   Error 310: More than 1 MISR AGP file has been found.
    ;
-   ;  *   Error 320: The MISR AGP file exists but is unreadable.
-   ;
-   ;  *   Error 330: An exception condition occurred in function
-   ;      is_readable.pro.
-   ;
-   ;  *   Error 340: The MISR AGP file does not exist.
+   ;  *   Error 320: The MISR AGP file is not found, not a regular file or
+   ;      not readable.
    ;
    ;  *   Error 600: An exception condition occurred in the MISR TOOLKIT
    ;      routine
@@ -105,8 +101,6 @@ FUNCTION find_agp_file, $
    ;  *   MISR Toolkit
    ;
    ;  *   chk_misr_path.pro
-   ;
-   ;  *   is_readable.pro
    ;
    ;  *   path2str.pro
    ;
@@ -152,6 +146,8 @@ FUNCTION find_agp_file, $
    ;
    ;  *   2019–05–04: Version 2.02 — Update the code to report the
    ;      specific error message of MTK routines.
+   ;
+   ;  *   2019–05–17: Version 2.03 — Code simplification (FILE_TEST).
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -308,35 +304,17 @@ FUNCTION find_agp_file, $
    ENDIF
    agp_fspec = files[0]
 
-   ;  Return to the calling routine with an error message if this AGP
-   ;  file is unreadable:
+   ;  Return to the calling routine with an error message if this output
+   ;  file 'agp_fspec' does not exist or is unreadable:
    IF (debug) THEN BEGIN
-      rc = is_readable(agp_fspec, DEBUG = debug, EXCPT_COND = excpt_cond)
-      CASE rc OF
-         1: BREAK
-         0: BEGIN
-               error_code = 320
-               excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                  rout_name + ': The input file ' + in_file + $
-                  ' exists but is unreadable.'
-               RETURN, error_code
-            END
-         -1: BEGIN
-               IF (debug) THEN BEGIN
-                  error_code = 330
-                  excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                     rout_name + ': ' + excpt_cond
-                  RETURN, error_code
-               ENDIF
-            END
-         -2: BEGIN
-               error_code = 340
-               excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                  rout_name + ': The input file ' + in_file + ' does not exist.'
-               RETURN, error_code
-            END
-         ELSE: BREAK
-      ENDCASE
+      res = FILE_TEST(file_spec, /READ, /REGULAR)
+      IF (res EQ 0) THEN BEGIN
+         error_code = 320
+         excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
+            rout_name + ': The input file ' + file_spec + $
+            ' is not found, not a regular file or not readable.'
+         RETURN, error_code
+      ENDIF
    ENDIF
 
    RETURN, return_code
