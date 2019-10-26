@@ -3,12 +3,13 @@ FUNCTION find_agp_file, $
    agp_fspec, $
    AGP_FOLDER = agp_folder, $
    AGP_VERSION = agp_version, $
+   VERBOSE = verbose, $
    DEBUG = debug, $
    EXCPT_COND = excpt_cond
 
    ;Sec-Doc
    ;  PURPOSE: This function provides the file specification (path + name)
-   ;  of the MISR AGP file corresponding to the given misr_path and
+   ;  of the single MISR AGP file corresponding to the given misr_path and
    ;  optional agp_version, if it is available either in the default
    ;  folder (defined by the function set_roots_vers.pro), or in the
    ;  folder specified by the optional input keyword parameter agp_folder.
@@ -16,13 +17,13 @@ FUNCTION find_agp_file, $
    ;  ALGORITHM: This function searches the folder root_dirs[0], or the
    ;  folder specified by the optional input keyword parameter agp_folder,
    ;  if provided, for the AGP file corresponding to the input positional
-   ;  parameter misr_path and the optionally specified version, and
+   ;  parameter misr_path and the optionally specified agp_version, and
    ;  provides the full file specification (path and name) of that file if
    ;  it is found, through the output positional argument agp_fspec.
    ;
    ;  SYNTAX: rc = find_agp_file(misr_path, agp_fspec, $
    ;  AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
-   ;  DEBUG = debug, EXCPT_COND = excpt_cond)
+   ;  VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
    ;  POSITIONAL PARAMETERS [INPUT/OUTPUT]:
    ;
@@ -43,6 +44,19 @@ FUNCTION find_agp_file, $
    ;      function
    ;      set_roots_vers.pro): The AGP version identifier to use instead
    ;      of the default value.
+   ;
+   ;  *   VERBOSE = verbose {INT} [I] (Default value: 0): Flag to enable
+   ;      (> 0) or skip (0) outputting messages on the console:
+   ;
+   ;      -   If verbose > 0, messages inform the user about progress in
+   ;          the execution of time-consuming routines, or the location of
+   ;          output files (e.g., log, map, plot, etc.);
+   ;
+   ;      -   If verbose > 1, messages record entering and exiting the
+   ;          routine; and
+   ;
+   ;      -   If verbose > 2, messages provide additional information
+   ;          about intermediary results.
    ;
    ;  *   DEBUG = debug {INT} [I] (Default value: 0): Flag to activate (1)
    ;      or skip (0) debugging tests.
@@ -68,7 +82,7 @@ FUNCTION find_agp_file, $
    ;      encountered, if the optional input keyword parameter DEBUG is
    ;      set and if the optional output keyword parameter EXCPT_COND is
    ;      provided. The output positional parameter agp_fspec may be
-   ;      inexistent, incomplete or incorrect.
+   ;      incorrect.
    ;
    ;  EXCEPTION CONDITIONS:
    ;
@@ -82,15 +96,16 @@ FUNCTION find_agp_file, $
    ;  *   Error 200: An exception condition occurred in function
    ;      path2str.pro.
    ;
-   ;  *   Error 210: This computer is unrecognized and no alternate
-   ;      directory address to the AGP folder is provided.
+   ;  *   Error 210: This computer is unrecognized, the function
+   ;      set_roots_vers.pro did not assign default folder values, and the
+   ;      optional input keyword parameter agp_folder is not specified.
    ;
    ;  *   Error 300: No MISR AGP file has been found.
    ;
    ;  *   Error 310: More than 1 MISR AGP file has been found.
    ;
-   ;  *   Error 320: The MISR AGP file is not found, not a regular file or
-   ;      not readable.
+   ;  *   Error 320: The MISR AGP file is not a regular file or not
+   ;      readable.
    ;
    ;  *   Error 600: An exception condition occurred in the MISR TOOLKIT
    ;      routine
@@ -101,6 +116,12 @@ FUNCTION find_agp_file, $
    ;  *   MISR Toolkit
    ;
    ;  *   chk_misr_path.pro
+   ;
+   ;  *   force_path_sep.pro
+   ;
+   ;  *   is_numeric.pro
+   ;
+   ;  *   is_readable_file.pro
    ;
    ;  *   path2str.pro
    ;
@@ -121,7 +142,7 @@ FUNCTION find_agp_file, $
    ;      rc = 0, excpt_cond = ><
    ;      IDL> PRINT, 'agp_fspec = ' + agp_fspec
    ;      agp_fspec =
-   ;         /Users/michel/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf
+   ;         ~/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf
    ;
    ;  REFERENCES: None.
    ;
@@ -147,7 +168,13 @@ FUNCTION find_agp_file, $
    ;  *   2019–05–04: Version 2.02 — Update the code to report the
    ;      specific error message of MTK routines.
    ;
-   ;  *   2019–05–17: Version 2.03 — Code simplification (FILE_TEST).
+   ;  *   2019–06–06: Version 2.03 — Add the optional input keyword
+   ;      parameter VERBOSE and implement minor documentation updates.
+   ;
+   ;  *   2019–08–20: Version 2.1.0 — Adopt revised coding and
+   ;      documentation standards (in particular regarding the use of
+   ;      verbose and the assignment of numeric return codes), and switch
+   ;      to 3-parts version identifiers.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -197,11 +224,18 @@ FUNCTION find_agp_file, $
    return_code = 0
 
    ;  Set the default values of flags and essential output keyword parameters:
+   IF (KEYWORD_SET(verbose)) THEN BEGIN
+      IF (is_numeric(verbose)) THEN verbose = FIX(verbose) ELSE verbose = 0
+      IF (verbose LT 0) THEN verbose = 0
+      IF (verbose GT 3) THEN verbose = 3
+   ENDIF ELSE verbose = 0
    IF KEYWORD_SET(debug) THEN debug = 1 ELSE debug = 0
    excpt_cond = ''
 
    ;  Initialize the output positional parameters:
    agp_fspec = ''
+
+   IF (verbose GT 1) THEN PRINT, 'Entering ' + rout_name + '.'
 
    IF (debug) THEN BEGIN
 
@@ -244,7 +278,7 @@ FUNCTION find_agp_file, $
    ;  explicitly:
    IF (~KEYWORD_SET(agp_version)) THEN agp_version = versions[0]
 
-   ;  Generate the long string version of the MISR Path number:
+   ;  Generate the short string version of the MISR Path number:
    rc = path2str(misr_path, misr_path_s, /NOHEADER, $
       DEBUG = debug, EXCPT_COND = excpt_cond)
    IF (debug AND (rc NE 0)) THEN BEGIN
@@ -261,15 +295,18 @@ FUNCTION find_agp_file, $
       IF (~KEYWORD_SET(agp_folder)) THEN BEGIN
          error_code = 210
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
-            ': ' + excpt_cond + ' And keyword parameter agp_folder is not set.'
+            ': Computer is unrecognized, function set_roots_vers.pro did ' + $
+            'not assign default folder values, and the optional input ' + $
+            'keyword parameter agp_folder is not specified.'
          RETURN, error_code
       ENDIF
    ENDIF
 
    ;  Set the directory address of the folder containing the input AGP files:
    IF (KEYWORD_SET(agp_folder)) THEN BEGIN
-      agp_fpath = force_path_sep(agp_folder, DEBUG = debug, $
+      rc = force_path_sep(agp_folder, DEBUG = debug, $
          EXCPT_COND = excpt_cond)
+      agp_fpath = agp_folder
    ENDIF ELSE BEGIN
       agp_fpath = root_dirs[0] + 'AGP' + PATH_SEP()
    ENDELSE
@@ -304,18 +341,20 @@ FUNCTION find_agp_file, $
    ENDIF
    agp_fspec = files[0]
 
-   ;  Return to the calling routine with an error message if this output
-   ;  file 'agp_fspec' does not exist or is unreadable:
+   ;  Return to the calling routine with an error message if this file
+   ;  'agp_fspec' is unreadable:
    IF (debug) THEN BEGIN
-      res = FILE_TEST(file_spec, /READ, /REGULAR)
+      res = is_readable_file(agp_fspec)
       IF (res EQ 0) THEN BEGIN
          error_code = 320
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-            rout_name + ': The input file ' + file_spec + $
-            ' is not found, not a regular file or not readable.'
+            rout_name + ': The input file ' + agp_fspec + $
+            ' is not a regular file or not readable.'
          RETURN, error_code
       ENDIF
    ENDIF
+
+   IF (verbose GT 1) THEN PRINT, 'Exiting ' + rout_name + '.'
 
    RETURN, return_code
 

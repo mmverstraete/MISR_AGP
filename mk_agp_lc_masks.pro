@@ -10,6 +10,7 @@ FUNCTION mk_agp_lc_masks, $
    LOG_FOLDER = log_folder, $
    MAP_IT = map_it, $
    MAP_FOLDER = map_folder, $
+   VERBOSE = verbose, $
    DEBUG = debug, $
    EXCPT_COND = excpt_cond
 
@@ -56,7 +57,7 @@ FUNCTION mk_agp_lc_masks, $
    ;  AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
    ;  LOG_IT = log_it, LOG_FOLDER = log_folder, $
    ;  MAP_IT = map_it, MAP_FOLDER = map_folder$
-   ;  DEBUG = debug, EXCPT_COND = excpt_cond)
+   ;  VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)
    ;
    ;  POSITIONAL PARAMETERS [INPUT/OUTPUT]:
    ;
@@ -101,6 +102,19 @@ FUNCTION mk_agp_lc_masks, $
    ;      function
    ;      set_roots_vers.pro): The directory address of the output folder
    ;      containing the maps.
+   ;
+   ;  *   VERBOSE = verbose {INT} [I] (Default value: 0): Flag to enable
+   ;      (> 0) or skip (0) outputting messages on the console:
+   ;
+   ;      -   If verbose > 0, messages inform the user about progress in
+   ;          the execution of time-consuming routines, or the location of
+   ;          output files (e.g., log, map, plot, etc.);
+   ;
+   ;      -   If verbose > 1, messages record entering and exiting the
+   ;          routine; and
+   ;
+   ;      -   If verbose > 2, messages provide additional information
+   ;          about intermediary results.
    ;
    ;  *   DEBUG = debug {INT} [I] (Default value: 0): Flag to activate (1)
    ;      or skip (0) debugging tests.
@@ -160,39 +174,35 @@ FUNCTION mk_agp_lc_masks, $
    ;      addresses agp_folder, log_folder and map_folder have not been
    ;      specified through input keyword parameters.
    ;
-   ;  *   Error 400: An exception condition occurred in lr2hr.pro.
+   ;  *   Error 400: The output folder log_fpath is unwritable.
    ;
-   ;  *   Error 410: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 410: The output folder map_fpath is unwritable.
+   ;
+   ;  *   Error 500: An exception condition occurred in lr2hr.pro.
+   ;
+   ;  *   Error 510: An exception condition occurred in make_bytemap.pro
    ;      while generating the overall map (all classes).
    ;
-   ;  *   Error 420: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 520: An exception condition occurred in make_bytemap.pro
    ;      while generating the Shallow ocean map.
    ;
-   ;  *   Error 430: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 530: An exception condition occurred in make_bytemap.pro
    ;      while generating the Landcover map.
    ;
-   ;  *   Error 440: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 540: An exception condition occurred in make_bytemap.pro
    ;      while generating the Coastline map.
    ;
-   ;  *   Error 450: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 550: An exception condition occurred in make_bytemap.pro
    ;      while generating the Shallow inland water map.
    ;
-   ;  *   Error 460: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 560: An exception condition occurred in make_bytemap.pro
    ;      while generating the Ephemeral water map.
    ;
-   ;  *   Error 470: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 570: An exception condition occurred in make_bytemap.pro
    ;      while generating the Deep inland water map.
    ;
-   ;  *   Error 480: An exception condition occurred in make_bytemap.pro
+   ;  *   Error 580: An exception condition occurred in make_bytemap.pro
    ;      while generating the Deep ocean map.
-   ;
-   ;  *   Error 500: The directory address of log_folder is unwritable.
-   ;
-   ;  *   Error 510: An exception condition occurred in is_writable.pro.
-   ;
-   ;  *   Error 520: The directory address of map_fpath is unwritable.
-   ;
-   ;  *   Error 530: An exception condition occurred in is_writable.pro.
    ;
    ;  *   Error 600: An exception condition occurred in the MISR TOOLKIT
    ;      routine
@@ -214,9 +224,13 @@ FUNCTION mk_agp_lc_masks, $
    ;
    ;  *   chk_misr_resol.pro
    ;
-   ;  *   get_agp_file.pro
+   ;  *   force_path_sep.pro
    ;
-   ;  *   is_writable.pro
+   ;  *   find_agp_file.pro
+   ;
+   ;  *   is_numeric.pro
+   ;
+   ;  *   is_writable_dir.pro
    ;
    ;  *   lr2hr.pro
    ;
@@ -303,6 +317,11 @@ FUNCTION mk_agp_lc_masks, $
    ;
    ;  *   2019–05–04: Version 2.02 — Update the code to report the
    ;      specific error message of MTK routines.
+   ;
+   ;  *   2019–08–20: Version 2.1.0 — Adopt revised coding and
+   ;      documentation standards (in particular regarding the use of
+   ;      verbose and the assignment of numeric return codes), and switch
+   ;      to 3-parts version identifiers.
    ;Sec-Lic
    ;  INTELLECTUAL PROPERTY RIGHTS
    ;
@@ -354,8 +373,15 @@ FUNCTION mk_agp_lc_masks, $
    ;  Set the default values of flags and essential output keyword parameters:
    IF (KEYWORD_SET(log_it)) THEN log_it = 1 ELSE log_it = 0
    IF (KEYWORD_SET(map_it)) THEN map_it = 1 ELSE map_it = 0
+   IF (KEYWORD_SET(verbose)) THEN BEGIN
+      IF (is_numeric(verbose)) THEN verbose = FIX(verbose) ELSE verbose = 0
+      IF (verbose LT 0) THEN verbose = 0
+      IF (verbose GT 3) THEN verbose = 3
+   ENDIF ELSE verbose = 0
    IF (KEYWORD_SET(debug)) THEN debug = 1 ELSE debug = 0
    excpt_cond = ''
+
+   IF (verbose GT 1) THEN PRINT, 'Entering ' + rout_name + '.'
 
    IF (debug) THEN BEGIN
 
@@ -454,8 +480,8 @@ FUNCTION mk_agp_lc_masks, $
          ': ' + excpt_cond
       RETURN, error_code
    ENDIF
-   pb_str = misr_path_str + '_' + misr_block_str
-   pb_str2 = misr_path_str + '-' + misr_block_str
+   pb_str_u = strcat([misr_path_str, misr_block_str], '_')
+   pb_str_d = strcat([misr_path_str, misr_block_str], '-')
 
    ;  Return to the calling routine with an error message if the routine
    ;  set_roots_vers.pro could not assign valid values to the array root_dirs
@@ -466,16 +492,19 @@ FUNCTION mk_agp_lc_masks, $
          (map_it AND (~KEYWORD_SET(map_folder)))) THEN BEGIN
          error_code = 299
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
-            ': ' + excpt_cond + ' And at least one of the optional input ' + $
-            'keyword parameters agp_folder, log_folder, map_folder is not set.'
+            ': Computer is unrecognized, function set_roots_vers.pro did ' + $
+            'not assign default folder values, and at least one of the ' + $
+            'optional keyword parameters agp_folder, log_folder, ' + $
+            'map_folder is not specified.'
          RETURN, error_code
       ENDIF
    ENDIF
 
    ;  Get the file specification of the AGP file for the specified MISR Path
    ;  and agp_version:
-   rc = find_agp_file(misr_path, agp_fspec, AGP_FOLDER = agp_folder, $
-      AGP_VERSION = agp_version, DEBUG = debug, EXCPT_COND = excpt_cond)
+   rc = find_agp_file(misr_path, agp_fspec, $
+      AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $
+      VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)
    IF (debug AND (rc NE 0)) THEN BEGIN
       error_code = 220
       excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
@@ -483,109 +512,76 @@ FUNCTION mk_agp_lc_masks, $
          RETURN, error_code
    ENDIF
 
-   ;  Set the directory address of the folder containing the output log file:
+   ;  Set the directory address of the folder containing the output log file,
+   ;  if it has been requested:
    IF (KEYWORD_SET(log_folder)) THEN BEGIN
-      log_fpath = force_path_sep(log_folder, DEBUG = debug, $
+      rc = force_path_sep(log_folder, DEBUG = debug, $
          EXCPT_COND = excpt_cond)
+      log_fpath = log_folder
    ENDIF ELSE BEGIN
-      log_fpath = root_dirs[3] + pb_str + PATH_SEP() + 'AGP' + PATH_SEP()
+      log_fpath = root_dirs[3] + pb_str_u + PATH_SEP() + 'AGP' + PATH_SEP()
    ENDELSE
 
+   ;  Create the output directory 'log_fpath' if it does not exist, and
+   ;  return to the calling routine with an error message if it is unwritable,
+   ;  then set the output log file specification:
    IF (KEYWORD_SET(log_it)) THEN BEGIN
-
-   ;  Return to the calling routine with an error message if the output
-   ;  directory 'log_fpath' is not writable, and create it if it does not
-   ;  exist:
-      rc = is_writable(log_fpath, DEBUG = debug, EXCPT_COND = excpt_cond)
-      CASE rc OF
-         0: BEGIN
-               error_code = 500
-               excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                  rout_name + ': The output folder ' + log_fpath + $
-                  ' is unwritable.'
-               RETURN, error_code
-            END
-         -1: BEGIN
-               IF (debug) THEN BEGIN
-                  error_code = 510
-                  excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                     rout_name + ': ' + excpt_cond
-                  RETURN, error_code
-               ENDIF
-            END
-         -2: BEGIN
-               FILE_MKDIR, log_fpath
-            END
-         ELSE: BREAK
-      ENDCASE
+      IF (debug) THEN BEGIN
+         res = is_writable_dir(log_fpath, /CREATE)
+         IF (res NE 1) THEN BEGIN
+            error_code = 400
+            excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
+               rout_name + ': The directory log_fpath is unwritable.'
+            RETURN, error_code
+         ENDIF
+      ENDIF
+      log_fname = 'Log_AGP_SurfType_' + pb_str_d + '_' + $
+         'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.txt'
+      log_fspec = log_fpath + log_fname
    ENDIF
 
    ;  Set the directory address of the folder containing the output map files,
    ;  if they have been requested:
    IF (KEYWORD_SET(map_folder)) THEN BEGIN
-      map_fpath = force_path_sep(map_folder, DEBUG = debug, $
+      rc = force_path_sep(map_folder, DEBUG = debug, $
          EXCPT_COND = excpt_cond)
+      map_fpath = map_folder
    ENDIF ELSE BEGIN
-      map_fpath = root_dirs[3] + pb_str + PATH_SEP() + 'AGP' + PATH_SEP()
+      map_fpath = root_dirs[3] + pb_str_u + PATH_SEP() + 'AGP' + PATH_SEP()
    ENDELSE
 
+   ;  Create the output directory 'map_fpath' if it does not exist, and
+   ;  return to the calling routine with an error message if it is unwritable,
+   ;  then set the output map file specifications:
    IF (KEYWORD_SET(map_it)) THEN BEGIN
-
-   ;  Return to the calling routine with an error message if the output
-   ;  directory 'map_fpath' is not writable, and create it if it does not
-   ;  exist:
-      rc = is_writable(map_fpath, DEBUG = debug, EXCPT_COND = excpt_cond)
-      CASE rc OF
-         0: BEGIN
-               error_code = 520
-               excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                  rout_name + ': The output folder ' + map_fpath + $
-                  ' is unwritable.'
-               RETURN, error_code
-            END
-         -1: BEGIN
-               IF (debug) THEN BEGIN
-                  error_code = 530
-                  excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
-                     rout_name + ': ' + excpt_cond
-                  RETURN, error_code
-               ENDIF
-            END
-         -2: BEGIN
-               FILE_MKDIR, map_fpath
-            END
-         ELSE: BREAK
-      ENDCASE
-   ENDIF
-
-   ;  Set the output log file specification, if it has been requested:
-   IF (KEYWORD_SET(log_it)) THEN BEGIN
-      log_fname = 'Log_AGP_stype_' + pb_str2 + '_' + $
-         'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.txt'
-      log_fspec = log_fpath + log_fname
-   ENDIF
-
-   ;  Set the output map file specifications, if they have been requested:
-   IF (KEYWORD_SET(map_it)) THEN BEGIN
+      IF (debug) THEN BEGIN
+         res = is_writable_dir(map_fpath, /CREATE)
+         IF (res NE 1) THEN BEGIN
+            error_code = 410
+            excpt_cond = 'Error ' + strstr(error_code) + ' in ' + $
+               rout_name + ': The directory map_fpath is unwritable.'
+            RETURN, error_code
+         ENDIF
+      ENDIF
       map_fname = STRARR(7)
 
-      map_fname[0] = 'Map_AGP_ShallowOceanMask_' + pb_str2 + '_' + $
+      map_fname[0] = 'Map_AGP_ShallowOceanMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[1] = 'Map_AGP_LandMask_' + pb_str2 + '_' + $
+      map_fname[1] = 'Map_AGP_LandMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[2] = 'Map_AGP_CoastlineMask_' + pb_str2 + '_' + $
+      map_fname[2] = 'Map_AGP_CoastlineMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[3] = 'Map_AGP_ShallowInlandWaterMask_' + pb_str2 + '_' + $
+      map_fname[3] = 'Map_AGP_ShallowInlandWaterMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[4] = 'Map_AGP_EphemeralWaterMask_' + pb_str2 + '_' + $
+      map_fname[4] = 'Map_AGP_EphemeralWaterMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[5] = 'Map_AGP_DeepInlandWaterMask_' + pb_str2 + '_' + $
+      map_fname[5] = 'Map_AGP_DeepInlandWaterMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
-      map_fname[6] = 'Map_AGP_DeepOceanMask_' + pb_str2 + '_' + $
+      map_fname[6] = 'Map_AGP_DeepOceanMask_' + pb_str_d + '_' + $
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
 
       map_fspec = map_fpath + map_fname
-      landcover_fspec = map_fpath + 'Map_AGP_Landcover_' + pb_str2 + '_' + $'
+      landcover_fspec = map_fpath + 'Map_AGP_Landcover_' + pb_str_d + '_' + $'
          'r' + strstr(misr_resol) + '_' + agp_version + '_' + date + '.png'
    ENDIF
 
@@ -620,7 +616,7 @@ FUNCTION mk_agp_lc_masks, $
       mask_lin = 512
       landcover = lr2hr(landcover, DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (excpt_cond NE '') THEN BEGIN
-         error_code = 400
+         error_code = 500
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -695,7 +691,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(landcover, good_vals, good_vals_cols, $
          landcover_fspec, DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 410
+         error_code = 510
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -707,7 +703,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_0, good_vals, good_vals_cols, $
          map_fspec[0], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 420
+         error_code = 520
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -719,7 +715,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_1, good_vals, good_vals_cols, $
          map_fspec[1], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 430
+         error_code = 530
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -731,7 +727,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_2, good_vals, good_vals_cols, $
          map_fspec[2], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 440
+         error_code = 540
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -743,7 +739,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_3, good_vals, good_vals_cols, $
          map_fspec[3], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 450
+         error_code = 550
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -755,7 +751,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_4, good_vals, good_vals_cols, $
          map_fspec[4], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 460
+         error_code = 560
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -767,7 +763,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_5, good_vals, good_vals_cols, $
          map_fspec[5], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 470
+         error_code = 570
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -779,7 +775,7 @@ FUNCTION mk_agp_lc_masks, $
       rc = make_bytemap(map_6, good_vals, good_vals_cols, $
          map_fspec[6], DEBUG = debug, EXCPT_COND = excpt_cond)
       IF (rc NE 0) THEN BEGIN
-         error_code = 480
+         error_code = 580
          excpt_cond = 'Error ' + strstr(error_code) + ' in ' + rout_name + $
             ': ' + excpt_cond
          RETURN, error_code
@@ -835,6 +831,17 @@ FUNCTION mk_agp_lc_masks, $
       CLOSE, log_unit
       FREE_LUN, log_unit
    ENDIF
+
+   IF ((verbose GT 0) AND (log_it)) THEN BEGIN
+      PRINT, 'The log file has been saved in ' + log_fspec + '.'
+   ENDIF
+   IF ((verbose GT 0) AND (map_it)) THEN BEGIN
+      PRINT, 'The combined land cover map has been saved in'
+      PRINT, landcover_fspec
+      PRINT, 'The individual landcover maps have been saved in'
+      PRINT, map_fspec
+   ENDIF
+   IF (verbose GT 1) THEN PRINT, 'Exiting ' + rout_name + '.'
 
    RETURN, return_code
 

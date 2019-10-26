@@ -9,11 +9,11 @@
 <h1>Documentation for the IDL routines in project MISR_AGP</h1>
 <h2>find_agp_file</h2>
 <ul>
-<li><p><strong>Purpose:</strong> This function provides the file specification (path + name) of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file corresponding to the given <code>misr_path</code> and optional <code>agp_version</code>, if it is available either in the default folder (defined by the function <code>set_roots_vers.pro</code>), or in the folder specified by the optional input keyword parameter <code>agp_folder</code>.</p></li>
-<li><p><strong>Algorithm:</strong> This function searches the folder <code>root_dirs[0]</code>, or the folder specified by the optional input keyword parameter <code>agp_folder</code>, if provided, for the <span class="smallcaps">AGP</span> file corresponding to the input positional parameter <code>misr_path</code> and the optionally specified version, and provides the full file specification (path and name) of that file if it is found, through the output positional argument <code>agp_fspec</code>.</p></li>
+<li><p><strong>Purpose:</strong> This function provides the file specification (path + name) of the single <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file corresponding to the given <code>misr_path</code> and optional <code>agp_version</code>, if it is available either in the default folder (defined by the function <code>set_roots_vers.pro</code>), or in the folder specified by the optional input keyword parameter <code>agp_folder</code>.</p></li>
+<li><p><strong>Algorithm:</strong> This function searches the folder <code>root_dirs[0]</code>, or the folder specified by the optional input keyword parameter <code>agp_folder</code>, if provided, for the <span class="smallcaps">AGP</span> file corresponding to the input positional parameter <code>misr_path</code> and the optionally specified <code>agp_version</code>, and provides the full file specification (path and name) of that file if it is found, through the output positional argument <code>agp_fspec</code>.</p></li>
 <li><p><strong>Syntax:</strong> <code>rc = find_agp_file(misr_path, agp_fspec, $</code><br />
 <code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
-<code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<code>VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
 <li><p><code>misr_path {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
@@ -25,6 +25,12 @@
 <code>set_roots_vers.pro):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
 <li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value:</code> Set by function<br />
 <code>set_roots_vers.pro):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>VERBOSE = verbose {INT} [I] (Default value: 0):</code> Flag to enable (&gt; 0) or skip (0) outputting messages on the console:</p>
+<ul>
+<li><p>If <code>verbose &gt; 0</code>, messages inform the user about progress in the execution of time-consuming routines, or the location of output files (e.g., log, map, plot, etc.);</p></li>
+<li><p>If <code>verbose &gt; 1</code>, messages record entering and exiting the routine; and</p></li>
+<li><p>If <code>verbose &gt; 2</code>, messages provide additional information about intermediary results.</p></li>
+</ul></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -32,7 +38,7 @@
 <li><p><strong>Outcome:</strong></p>
 <ul>
 <li><p>If no exception condition has been detected, this function returns <code>0</code>, and the output keyword parameter <code>excpt_cond</code> is set to a null string, if the optional input keyword parameter <code>DEBUG</code> was set and if the optional output keyword parameter <code>EXCPT_COND</code> was provided in the call. The output positional parameter <code>agp_fspec</code> contains the full specification of the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file.</p></li>
-<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The output positional parameter <code>agp_fspec</code> may be inexistent, incomplete or incorrect.</p></li>
+<li><p>If an exception condition has been detected, this function returns a non-zero error code, and the output keyword parameter <code>excpt_cond</code> contains a message about the exception condition encountered, if the optional input keyword parameter <code>DEBUG</code> is set and if the optional output keyword parameter <code>EXCPT_COND</code> is provided. The output positional parameter <code>agp_fspec</code> may be incorrect.</p></li>
 </ul></li>
 <li><p><strong>Exception conditions:</strong></p>
 <ul>
@@ -40,10 +46,10 @@
 <li><p>Error 110: Input argument <code>misr_path</code> is invalid.</p></li>
 <li><p>Error 199: An exception condition occurred in function <code>set_roots_vers</code>.</p></li>
 <li><p>Error 200: An exception condition occurred in function <code>path2str.pro</code>.</p></li>
-<li><p>Error 210: This computer is unrecognized and no alternate directory address to the <span class="smallcaps">AGP</span> folder is provided.</p></li>
+<li><p>Error 210: This computer is unrecognized, the function <code>set_roots_vers.pro</code> did not assign default folder values, and the optional input keyword parameter <code>agp_folder</code> is not specified.</p></li>
 <li><p>Error 300: No <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
 <li><p>Error 310: More than 1 <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file has been found.</p></li>
-<li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file is not found, not a regular file or not readable.</p></li>
+<li><p>Error 320: The <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> file is not a regular file or not readable.</p></li>
 <li><p>Error 600: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_MAKE_FILENAME</code>.</p></li>
 </ul></li>
@@ -51,6 +57,9 @@
 <ul>
 <li><p><code>MISR Toolkit</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
+<li><p><code>force_path_sep.pro</code></p></li>
+<li><p><code>is_numeric.pro</code></p></li>
+<li><p><code>is_readable_file.pro</code></p></li>
 <li><p><code>path2str.pro</code></p></li>
 <li><p><code>set_roots_vers.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
@@ -66,7 +75,7 @@ IDL&gt; PRINT, &#39;rc = &#39; + strstr(rc) + &#39;, $
 rc = 0, excpt_cond = &gt;&lt;
 IDL&gt; PRINT, &#39;agp_fspec = &#39; + agp_fspec
 agp_fspec =
-   /Users/michel/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf</code></pre></li>
+   ~/MISR_HR/Input/AGP/MISR_AM1_AGP_P168_F01_24.hdf</code></pre></li>
 <li><p><strong>References:</strong> None.</p></li>
 <li><p><strong>Versioning:</strong></p>
 <ul>
@@ -78,7 +87,8 @@ agp_fspec =
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 <li><p>2019&#8211;05&#8211;04: Version 2.02 &#8212; Update the code to report the specific error message of MTK routines.</p></li>
-<li><p>2019&#8211;05&#8211;17: Version 2.03 &#8212; Code simplification (<code>FILE_TEST</code>).</p></li>
+<li><p>2019&#8211;06&#8211;06: Version 2.03 &#8212; Add the optional input keyword parameter <code>VERBOSE</code> and implement minor documentation updates.</p></li>
+<li><p>2019&#8211;08&#8211;20: Version 2.1.0 &#8212; Adopt revised coding and documentation standards (in particular regarding the use of <code>verbose</code> and the assignment of numeric return codes), and switch to 3-parts version identifiers.</p></li>
 </ul></li>
 </ul>
 <h2>mk_agp_lc_masks</h2>
@@ -101,7 +111,7 @@ Within each individual land cover class mask, each pixel is assigned the value <
 <code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
 <code>LOG_IT = log_it, LOG_FOLDER = log_folder, $</code><br />
 <code>MAP_IT = map_it, MAP_FOLDER = map_folder$</code><br />
-<code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<code>VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
 <li><p><code>misr_path {INT} [I]:</code> The specified <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
@@ -122,6 +132,12 @@ Within each individual land cover class mask, each pixel is assigned the value <
 <li><p><code>MAP_IT = map_it {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) generating maps of the numerical results.</p></li>
 <li><p><code>MAP_FOLDER = map_folder {STRING} [I] (Default value:</code> Set by function<br />
 <code>set_roots_vers.pro):</code> The directory address of the output folder containing the maps.</p></li>
+<li><p><code>VERBOSE = verbose {INT} [I] (Default value: 0):</code> Flag to enable (&gt; 0) or skip (0) outputting messages on the console:</p>
+<ul>
+<li><p>If <code>verbose &gt; 0</code>, messages inform the user about progress in the execution of time-consuming routines, or the location of output files (e.g., log, map, plot, etc.);</p></li>
+<li><p>If <code>verbose &gt; 1</code>, messages record entering and exiting the routine; and</p></li>
+<li><p>If <code>verbose &gt; 2</code>, messages provide additional information about intermediary results.</p></li>
+</ul></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -144,19 +160,17 @@ Within each individual land cover class mask, each pixel is assigned the value <
 <li><p>Error 210: An exception condition occurred in <code>block2str.pro</code>.</p></li>
 <li><p>Error 220: An exception condition occurred in <code>find_agp_file.pro</code>.</p></li>
 <li><p>Error 299: The function <code>set_roots_vers.pro</code> could not assign values to the array <code>root_dirs</code> and one or more directory addresses <code>agp_folder</code>, <code>log_folder</code> and <code>map_folder</code> have not been specified through input keyword parameters.</p></li>
-<li><p>Error 400: An exception condition occurred in <code>lr2hr.pro</code>.</p></li>
-<li><p>Error 410: An exception condition occurred in <code>make_bytemap.pro</code> while generating the overall map (all classes).</p></li>
-<li><p>Error 420: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow ocean map.</p></li>
-<li><p>Error 430: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Landcover map.</p></li>
-<li><p>Error 440: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Coastline map.</p></li>
-<li><p>Error 450: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow inland water map.</p></li>
-<li><p>Error 460: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Ephemeral water map.</p></li>
-<li><p>Error 470: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep inland water map.</p></li>
-<li><p>Error 480: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep ocean map.</p></li>
-<li><p>Error 500: The directory address of <code>log_folder</code> is unwritable.</p></li>
-<li><p>Error 510: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
-<li><p>Error 520: The directory address of <code>map_fpath</code> is unwritable.</p></li>
-<li><p>Error 530: An exception condition occurred in <code>is_writable.pro</code>.</p></li>
+<li><p>Error 400: The output folder <code>log_fpath</code> is unwritable.</p></li>
+<li><p>Error 410: The output folder <code>map_fpath</code> is unwritable.</p></li>
+<li><p>Error 500: An exception condition occurred in <code>lr2hr.pro</code>.</p></li>
+<li><p>Error 510: An exception condition occurred in <code>make_bytemap.pro</code> while generating the overall map (all classes).</p></li>
+<li><p>Error 520: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow ocean map.</p></li>
+<li><p>Error 530: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Landcover map.</p></li>
+<li><p>Error 540: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Coastline map.</p></li>
+<li><p>Error 550: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Shallow inland water map.</p></li>
+<li><p>Error 560: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Ephemeral water map.</p></li>
+<li><p>Error 570: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep inland water map.</p></li>
+<li><p>Error 580: An exception condition occurred in <code>make_bytemap.pro</code> while generating the Deep ocean map.</p></li>
 <li><p>Error 600: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
 <code>MTK_SETREGION_BY_PATH_BLOCKRANGE</code>.</p></li>
 <li><p>Error 610: An exception condition occurred in the <span class="smallcaps">MISR</span> <span class="smallcaps">Toolkit</span> routine<br />
@@ -169,8 +183,10 @@ Within each individual land cover class mask, each pixel is assigned the value <
 <li><p><code>chk_misr_block.pro</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
 <li><p><code>chk_misr_resol.pro</code></p></li>
-<li><p><code>get_agp_file.pro</code></p></li>
-<li><p><code>is_writable.pro</code></p></li>
+<li><p><code>force_path_sep.pro</code></p></li>
+<li><p><code>find_agp_file.pro</code></p></li>
+<li><p><code>is_numeric.pro</code></p></li>
+<li><p><code>is_writable_dir.pro</code></p></li>
 <li><p><code>lr2hr.pro</code></p></li>
 <li><p><code>make_bytemap.pro</code></p></li>
 <li><p><code>path2str.pro</code></p></li>
@@ -225,6 +241,7 @@ Processing nominal.</code></pre></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
 <li><p>2019&#8211;05&#8211;04: Version 2.02 &#8212; Update the code to report the specific error message of MTK routines.</p></li>
+<li><p>2019&#8211;08&#8211;20: Version 2.1.0 &#8212; Adopt revised coding and documentation standards (in particular regarding the use of <code>verbose</code> and the assignment of numeric return codes), and switch to 3-parts version identifiers.</p></li>
 </ul></li>
 </ul>
 <h2>mk_water_land_masks</h2>
@@ -234,7 +251,7 @@ Processing nominal.</code></pre></li>
 <li><p><strong>Syntax:</strong> <code>rc = mk_water_land_masks(misr_path, misr_block, misr_resol, $</code><br />
 <code>water_mask, land_mask, $</code><br />
 <code>AGP_FOLDER = agp_folder, AGP_VERSION = agp_version, $</code><br />
-<code>DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
+<code>VERBOSE = verbose, DEBUG = debug, EXCPT_COND = excpt_cond)</code></p></li>
 <li><p><strong>Positional parameters [Input/Output]:</strong></p>
 <ul>
 <li><p><code>misr_path {INT} [I]:</code> The selected <span class="smallcaps">MISR</span> <span class="smallcaps">Path</span> number.</p></li>
@@ -249,6 +266,12 @@ Processing nominal.</code></pre></li>
 <code>set_roots_vers.pro):</code> The directory address of the folder containing the <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> files, if they are not located in the default location.</p></li>
 <li><p><code>AGP_VERSION = agp_version {STRING} [I] (Default value:</code> Set by function<br />
 <code>set_roots_vers.pro):</code> The <span class="smallcaps">AGP</span> version identifier to use instead of the default value.</p></li>
+<li><p><code>VERBOSE = verbose {INT} [I] (Default value: 0):</code> Flag to enable (&gt; 0) or skip (0) outputting messages on the console:</p>
+<ul>
+<li><p>If <code>verbose &gt; 0</code>, messages inform the user about progress in the execution of time-consuming routines, or the location of output files (e.g., log, map, plot, etc.);</p></li>
+<li><p>If <code>verbose &gt; 1</code>, messages record entering and exiting the routine; and</p></li>
+<li><p>If <code>verbose &gt; 2</code>, messages provide additional information about intermediary results.</p></li>
+</ul></li>
 <li><p><code>DEBUG = debug {INT} [I] (Default value: 0):</code> Flag to activate (<code>1</code>) or skip (<code>0</code>) debugging tests.</p></li>
 <li><p><code>EXCPT_COND = excpt_cond {STRING} [O] (Default value: &#8221;):</code> Description of the exception condition if one has been encountered, or a null string otherwise.</p></li>
 </ul></li>
@@ -271,6 +294,7 @@ Processing nominal.</code></pre></li>
 <li><p><code>chk_misr_block.pro</code></p></li>
 <li><p><code>chk_misr_path.pro</code></p></li>
 <li><p><code>chk_misr_resol.pro</code></p></li>
+<li><p><code>is_numeric.pro</code></p></li>
 <li><p><code>mk_agp_lc_masks.pro</code></p></li>
 <li><p><code>strstr.pro</code></p></li>
 </ul></li>
@@ -279,6 +303,7 @@ Processing nominal.</code></pre></li>
 <li><p><strong>Note 1:</strong> The water and land masks generated by this function are based on static information on the spatial distribution of surface geophysical types: they are valid for all cameras and throughout the <span class="smallcaps">MISR</span> mission.</p></li>
 <li><p><strong>Note 2:</strong> Although the underlying <span class="smallcaps">MISR</span> <span class="smallcaps">AGP</span> data distinguishes between various types of geophysical media, this is not meant to be an accurate land cover map, let alone a source of information on land cover change.</p></li>
 <li><p><strong>Note 3:</strong> The landcover information contained in the AGP files is provided at the spatial resolution of 1100 m. If the input positional parameter <code>misr_resol</code> is set to <code>275</code>, then the original values are simply duplicated with the <span class="smallcaps">MISR-HR</span> function <code>lr2hr.pro</code> to artificially generate the higher resolution map: no aditional or more detailed information is provided.</p></li>
+<li><p><strong>Note 4:</strong> The 7 base land cover maps are generated by the function <code>mk_agp_lc_masks</code>, which accepts the following optional input keyword parameters: <code>AGP_FOLDER</code> and <code>AGP_VERSION</code> are passed on without checking their validity, while <code>LOG_IT</code>, <code>LOG_FOLDER</code>, <code>MAP_IT</code> and <code>MAP_FOLDER</code> are unset for this purpose.</p></li>
 </ul></li>
 <li><p><strong>Examples:</strong></p>
 <pre><code>IDL&gt; misr_path = 168
@@ -303,6 +328,7 @@ rc = 0, excpt_cond = &gt;&lt;</code></pre></li>
 <li><p>2019&#8211;01&#8211;08: Version 1.3 &#8212; Rename the function from <code>make_water_land_masks.pro</code> to <code>mk_water_land_masks.pro</code>, and update the documentation.</p></li>
 <li><p>2019&#8211;01&#8211;28: Version 2.00 &#8212; Systematic update of all routines to implement stricter coding standards and improve documentation.</p></li>
 <li><p>2019&#8211;02&#8211;24: Version 2.01 &#8212; Documentation update.</p></li>
+<li><p>2019&#8211;08&#8211;20: Version 2.1.0 &#8212; Adopt revised coding and documentation standards (in particular regarding the use of <code>verbose</code> and the assignment of numeric return codes), and switch to 3-parts version identifiers.</p></li>
 </ul></li>
 </ul>
 </body>
